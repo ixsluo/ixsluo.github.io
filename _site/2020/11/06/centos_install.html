@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Centos7 Installation</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Centos7 Installation" />
+<meta name="author" content="ixsluo" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="管理服务 systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt; 网络 ip [addr] 终端提示音关闭 setterm -blength n yum查找包及包含命令的包 yum search &lt;package&gt; yum provides &lt;command&gt; SELinux sestatus查看SELinux状态 enforcing 强制模式，运行中，限制domian/type permissive 宽容模式，运行中，不限制但是警告 disabled 关闭，没有运行 getenforce 查看当前模式 setenforce [0|1] 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式 关闭SELinux需修改 /etc/selinux/config -&gt; SELINUX=disabled 并重启系统。 SELinux端口管理 semanage port -l # 显示所有端口 semanage port [-a|-d] -t &lt;type, [ssh_port_t]&gt; -p tcp|udp &lt;port number&gt; # 为指定策略增加或删除端口 yum install [setools-console-3.3.8-4.el7.x86_64] 安装seinfo、sesearch firewall 服务，firewalld，管理命令，firewall-cmd firewall-cmd --get-active-zones # 获取当前活动区域 firewall-cmd --get-service # 获取所有支持的服务 firewall-cmd --reload # 重新加载防火墙 部分参数 | | | |:-|:-| |–permanent |永久加入规则，不影响当前运行状态| |–zone=&lt;zone&gt; |对选择的区域进行操作| |–list-services |列出当前启用的服务| |–list-ports |列出当前启用的端口| |–add-service= |启用服务| |–add-port=[12345/tcp] |启用端口| 添加富规则：--add-rich-rule=&quot;rule family=&#39;ipv4&#39; source address=&#39;192.168.0.4/24&#39; service name=&#39;http&#39; accept 允许ip192.168.0.4/24访问http 移除富规则：--remove-rich-rule=&quot;&lt;above&gt;&quot; SSH 配置文件 /etc/ssh/sshd.config 参数表 rpm -qa | grep ssh # 检查是否安装 yum install openssh-server # yum安装 服务，sshd chrony 同步时间 rpm -qa | grep chrony yum install chrony 服务，chrony，start -&gt; enable 若开启防火墙，允许NTP服务 firewall-cmd --add-service=ntp --permanent firewall-cmd --reload 禁止普通用户su cat &quot;auth required pam_wheel.so use_uid&quot; &gt;&gt; /etc/pam.d/su cat &quot;SU_WHEEL_ONLY yes&quot; &gt;&gt; /etc/login.defs 允许指定用户su usermod -G wheel &lt;username&gt; bash-completion 命令自动补全增强 yum install bash-completion -y 主机名 hostnamectl -h set-hostname &lt;hostname&gt; docker uname -a 检查linux内核至少3.8，建议3.10以上 yum update [-y] yum install yum-utils device-mapper-persistent-data lvm2 [-y] yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo yum list docker-ce --showduplicates | sort -r # 查看所有版本 yum install [docker-ce-18.03.1.ce-1.el7.centos] [-y] systemctl start docker ; systemctl enable docker docker version # 检查是否安装成功 docker pull &lt;image&gt; # 抓取镜像 docker image ls # 列出所有镜像 docker container ls docker ps -a # 列出所有容器 docker run &lt;image&gt; [--name &lt;container&gt;] # 在容器中运行镜像 docker start|stop|restart|kill &lt;container&gt; # 容器控制 docker logs &lt;container&gt; # 容器日志 MySQL yum install mysql mysql-devel 服务端，mariadb或mysql-server -------- yum install mariadb* # to replace mysql-server -------- weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm rpm -ivh mysql-community-release-el7-5.noarch.rpm yum install mysql-community-server vi /etc/systemd/system/mysql.service -&gt; [service] Type=simple, root:root 注释/etc/my.cnf pid-file -------- 编码配置 cat &gt;&gt; /etc/my.cnf &lt;&lt; EOF [mysql] default-character-set=utf8 EOF semanage permissive -a mysqld_t firewall-cmd --zone=public --permanent --add-port=3306/tcp firewall-cmd --reload 启动服务 systemctl start mariadb/mysql systemctl enable ... mysql -u root 设置密码 &gt; set password for &#39;root&#39;@&#39;localhost&#39; =password(&#39;&lt;password&gt;&#39;) ; &gt; create DATABASE gogs ; &gt; insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;gogs&quot;,password(&quot;gogsmysql&quot;)) ;" />
+<meta property="og:description" content="管理服务 systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt; 网络 ip [addr] 终端提示音关闭 setterm -blength n yum查找包及包含命令的包 yum search &lt;package&gt; yum provides &lt;command&gt; SELinux sestatus查看SELinux状态 enforcing 强制模式，运行中，限制domian/type permissive 宽容模式，运行中，不限制但是警告 disabled 关闭，没有运行 getenforce 查看当前模式 setenforce [0|1] 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式 关闭SELinux需修改 /etc/selinux/config -&gt; SELINUX=disabled 并重启系统。 SELinux端口管理 semanage port -l # 显示所有端口 semanage port [-a|-d] -t &lt;type, [ssh_port_t]&gt; -p tcp|udp &lt;port number&gt; # 为指定策略增加或删除端口 yum install [setools-console-3.3.8-4.el7.x86_64] 安装seinfo、sesearch firewall 服务，firewalld，管理命令，firewall-cmd firewall-cmd --get-active-zones # 获取当前活动区域 firewall-cmd --get-service # 获取所有支持的服务 firewall-cmd --reload # 重新加载防火墙 部分参数 | | | |:-|:-| |–permanent |永久加入规则，不影响当前运行状态| |–zone=&lt;zone&gt; |对选择的区域进行操作| |–list-services |列出当前启用的服务| |–list-ports |列出当前启用的端口| |–add-service= |启用服务| |–add-port=[12345/tcp] |启用端口| 添加富规则：--add-rich-rule=&quot;rule family=&#39;ipv4&#39; source address=&#39;192.168.0.4/24&#39; service name=&#39;http&#39; accept 允许ip192.168.0.4/24访问http 移除富规则：--remove-rich-rule=&quot;&lt;above&gt;&quot; SSH 配置文件 /etc/ssh/sshd.config 参数表 rpm -qa | grep ssh # 检查是否安装 yum install openssh-server # yum安装 服务，sshd chrony 同步时间 rpm -qa | grep chrony yum install chrony 服务，chrony，start -&gt; enable 若开启防火墙，允许NTP服务 firewall-cmd --add-service=ntp --permanent firewall-cmd --reload 禁止普通用户su cat &quot;auth required pam_wheel.so use_uid&quot; &gt;&gt; /etc/pam.d/su cat &quot;SU_WHEEL_ONLY yes&quot; &gt;&gt; /etc/login.defs 允许指定用户su usermod -G wheel &lt;username&gt; bash-completion 命令自动补全增强 yum install bash-completion -y 主机名 hostnamectl -h set-hostname &lt;hostname&gt; docker uname -a 检查linux内核至少3.8，建议3.10以上 yum update [-y] yum install yum-utils device-mapper-persistent-data lvm2 [-y] yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo yum list docker-ce --showduplicates | sort -r # 查看所有版本 yum install [docker-ce-18.03.1.ce-1.el7.centos] [-y] systemctl start docker ; systemctl enable docker docker version # 检查是否安装成功 docker pull &lt;image&gt; # 抓取镜像 docker image ls # 列出所有镜像 docker container ls docker ps -a # 列出所有容器 docker run &lt;image&gt; [--name &lt;container&gt;] # 在容器中运行镜像 docker start|stop|restart|kill &lt;container&gt; # 容器控制 docker logs &lt;container&gt; # 容器日志 MySQL yum install mysql mysql-devel 服务端，mariadb或mysql-server -------- yum install mariadb* # to replace mysql-server -------- weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm rpm -ivh mysql-community-release-el7-5.noarch.rpm yum install mysql-community-server vi /etc/systemd/system/mysql.service -&gt; [service] Type=simple, root:root 注释/etc/my.cnf pid-file -------- 编码配置 cat &gt;&gt; /etc/my.cnf &lt;&lt; EOF [mysql] default-character-set=utf8 EOF semanage permissive -a mysqld_t firewall-cmd --zone=public --permanent --add-port=3306/tcp firewall-cmd --reload 启动服务 systemctl start mariadb/mysql systemctl enable ... mysql -u root 设置密码 &gt; set password for &#39;root&#39;@&#39;localhost&#39; =password(&#39;&lt;password&gt;&#39;) ; &gt; create DATABASE gogs ; &gt; insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;gogs&quot;,password(&quot;gogsmysql&quot;)) ;" />
+<link rel="canonical" href="http://localhost:4000/2020/11/06/centos_install.html" />
+<meta property="og:url" content="http://localhost:4000/2020/11/06/centos_install.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-06T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Centos7 Installation" />
+<script type="application/ld+json">
+{"datePublished":"2020-11-06T00:00:00+08:00","url":"http://localhost:4000/2020/11/06/centos_install.html","dateModified":"2020-11-06T00:00:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/11/06/centos_install.html"},"author":{"@type":"Person","name":"ixsluo"},"description":"管理服务 systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt; 网络 ip [addr] 终端提示音关闭 setterm -blength n yum查找包及包含命令的包 yum search &lt;package&gt; yum provides &lt;command&gt; SELinux sestatus查看SELinux状态 enforcing 强制模式，运行中，限制domian/type permissive 宽容模式，运行中，不限制但是警告 disabled 关闭，没有运行 getenforce 查看当前模式 setenforce [0|1] 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式 关闭SELinux需修改 /etc/selinux/config -&gt; SELINUX=disabled 并重启系统。 SELinux端口管理 semanage port -l # 显示所有端口 semanage port [-a|-d] -t &lt;type, [ssh_port_t]&gt; -p tcp|udp &lt;port number&gt; # 为指定策略增加或删除端口 yum install [setools-console-3.3.8-4.el7.x86_64] 安装seinfo、sesearch firewall 服务，firewalld，管理命令，firewall-cmd firewall-cmd --get-active-zones # 获取当前活动区域 firewall-cmd --get-service # 获取所有支持的服务 firewall-cmd --reload # 重新加载防火墙 部分参数 | | | |:-|:-| |–permanent |永久加入规则，不影响当前运行状态| |–zone=&lt;zone&gt; |对选择的区域进行操作| |–list-services |列出当前启用的服务| |–list-ports |列出当前启用的端口| |–add-service= |启用服务| |–add-port=[12345/tcp] |启用端口| 添加富规则：--add-rich-rule=&quot;rule family=&#39;ipv4&#39; source address=&#39;192.168.0.4/24&#39; service name=&#39;http&#39; accept 允许ip192.168.0.4/24访问http 移除富规则：--remove-rich-rule=&quot;&lt;above&gt;&quot; SSH 配置文件 /etc/ssh/sshd.config 参数表 rpm -qa | grep ssh # 检查是否安装 yum install openssh-server # yum安装 服务，sshd chrony 同步时间 rpm -qa | grep chrony yum install chrony 服务，chrony，start -&gt; enable 若开启防火墙，允许NTP服务 firewall-cmd --add-service=ntp --permanent firewall-cmd --reload 禁止普通用户su cat &quot;auth required pam_wheel.so use_uid&quot; &gt;&gt; /etc/pam.d/su cat &quot;SU_WHEEL_ONLY yes&quot; &gt;&gt; /etc/login.defs 允许指定用户su usermod -G wheel &lt;username&gt; bash-completion 命令自动补全增强 yum install bash-completion -y 主机名 hostnamectl -h set-hostname &lt;hostname&gt; docker uname -a 检查linux内核至少3.8，建议3.10以上 yum update [-y] yum install yum-utils device-mapper-persistent-data lvm2 [-y] yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo yum list docker-ce --showduplicates | sort -r # 查看所有版本 yum install [docker-ce-18.03.1.ce-1.el7.centos] [-y] systemctl start docker ; systemctl enable docker docker version # 检查是否安装成功 docker pull &lt;image&gt; # 抓取镜像 docker image ls # 列出所有镜像 docker container ls docker ps -a # 列出所有容器 docker run &lt;image&gt; [--name &lt;container&gt;] # 在容器中运行镜像 docker start|stop|restart|kill &lt;container&gt; # 容器控制 docker logs &lt;container&gt; # 容器日志 MySQL yum install mysql mysql-devel 服务端，mariadb或mysql-server -------- yum install mariadb* # to replace mysql-server -------- weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm rpm -ivh mysql-community-release-el7-5.noarch.rpm yum install mysql-community-server vi /etc/systemd/system/mysql.service -&gt; [service] Type=simple, root:root 注释/etc/my.cnf pid-file -------- 编码配置 cat &gt;&gt; /etc/my.cnf &lt;&lt; EOF [mysql] default-character-set=utf8 EOF semanage permissive -a mysqld_t firewall-cmd --zone=public --permanent --add-port=3306/tcp firewall-cmd --reload 启动服务 systemctl start mariadb/mysql systemctl enable ... mysql -u root 设置密码 &gt; set password for &#39;root&#39;@&#39;localhost&#39; =password(&#39;&lt;password&gt;&#39;) ; &gt; create DATABASE gogs ; &gt; insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;gogs&quot;,password(&quot;gogsmysql&quot;)) ;","headline":"Centos7 Installation","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/"></a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Centos7 Installation</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-11-06T00:00:00+08:00" itemprop="datePublished">Nov 6, 2020
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">ixsluo</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>管理服务</p>
+
+<p><code class="language-plaintext highlighter-rouge">systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt;</code></p>
+
+<p>网络</p>
+
+<p><code class="language-plaintext highlighter-rouge">ip [addr]</code></p>
+
+<p>终端提示音关闭</p>
+
+<p><code class="language-plaintext highlighter-rouge">setterm -blength n</code></p>
+
+<p>yum查找包及包含命令的包</p>
+
+<p><code class="language-plaintext highlighter-rouge">yum search &lt;package&gt;</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">yum provides &lt;command&gt;</code></p>
+
+<h2 id="selinux">SELinux</h2>
+
+<p><code class="language-plaintext highlighter-rouge">sestatus</code>查看SELinux状态</p>
+
+<ul>
+  <li><em>enforcing</em>    强制模式，运行中，限制domian/type</li>
+  <li><em>permissive</em>   宽容模式，运行中，不限制但是警告</li>
+  <li><em>disabled</em>     关闭，没有运行</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">getenforce</code> 查看当前模式</p>
+
+<p><code class="language-plaintext highlighter-rouge">setenforce [0|1]</code> 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式</p>
+
+<p>关闭SELinux需修改 <em>/etc/selinux/config</em> -&gt; <code class="language-plaintext highlighter-rouge">SELINUX=disabled</code> 并重启系统。</p>
+
+<p>SELinux端口管理</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>semanage port <span class="nt">-l</span>  <span class="c"># 显示所有端口</span>
+semanage port <span class="o">[</span><span class="nt">-a</span>|-d] <span class="nt">-t</span> &lt;<span class="nb">type</span>, <span class="o">[</span>ssh_port_t]&gt; <span class="nt">-p</span> tcp|udp &lt;port number&gt;  <span class="c"># 为指定策略增加或删除端口</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">yum install [setools-console-3.3.8-4.el7.x86_64]</code> 安装<code class="language-plaintext highlighter-rouge">seinfo</code>、<code class="language-plaintext highlighter-rouge">sesearch</code></p>
+
+<h2 id="firewall">firewall</h2>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">firewalld</code>，管理命令，<code class="language-plaintext highlighter-rouge">firewall-cmd</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firewall-cmd <span class="nt">--get-active-zones</span>  <span class="c"># 获取当前活动区域</span>
+firewall-cmd <span class="nt">--get-service</span>  <span class="c"># 获取所有支持的服务</span>
+firewall-cmd <span class="nt">--reload</span>  <span class="c"># 重新加载防火墙</span>
+</code></pre></div></div>
+
+<p>部分参数
+|  |  |
+|:-|:-|
+|–permanent    |永久加入规则，不影响当前运行状态|
+|–zone=&lt;zone&gt;  |对选择的区域进行操作|
+|–list-services |列出当前启用的服务|
+|–list-ports    |列出当前启用的端口|
+|–add-service=  |启用服务|
+|–add-port=[12345/tcp]  |启用端口|</p>
+
+<p>添加富规则：<code class="language-plaintext highlighter-rouge">--add-rich-rule="rule family='ipv4' source address='192.168.0.4/24' service name='http' accept</code></p>
+
+<p>允许ip192.168.0.4/24访问http</p>
+
+<p>移除富规则：<code class="language-plaintext highlighter-rouge">--remove-rich-rule="&lt;above&gt;"</code></p>
+
+<h2 id="ssh">SSH</h2>
+
+<p>配置文件 <em>/etc/ssh/sshd.config</em> <a href="http://www.04007.cn/article/538.html">参数表</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rpm <span class="nt">-qa</span> | <span class="nb">grep </span>ssh  <span class="c"># 检查是否安装</span>
+yum <span class="nb">install </span>openssh-server  <span class="c"># yum安装</span>
+</code></pre></div></div>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">sshd</code></p>
+
+<h2 id="chrony-同步时间">chrony 同步时间</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rpm <span class="nt">-qa</span> | <span class="nb">grep </span>chrony
+yum <span class="nb">install </span>chrony
+</code></pre></div></div>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">chrony</code>，<code class="language-plaintext highlighter-rouge">start</code> -&gt; <code class="language-plaintext highlighter-rouge">enable</code></p>
+
+<p>若开启防火墙，允许NTP服务</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firewall-cmd <span class="nt">--add-service</span><span class="o">=</span>ntp <span class="nt">--permanent</span>
+firewall-cmd <span class="nt">--reload</span>
+</code></pre></div></div>
+
+<h2 id="禁止普通用户su">禁止普通用户su</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="s2">"auth    required   pam_wheel.so  use_uid"</span> <span class="o">&gt;&gt;</span> /etc/pam.d/su
+<span class="nb">cat</span> <span class="s2">"SU_WHEEL_ONLY yes"</span> <span class="o">&gt;&gt;</span> /etc/login.defs
+</code></pre></div></div>
+
+<p>允许指定用户su</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usermod <span class="nt">-G</span> wheel &lt;username&gt;
+</code></pre></div></div>
+
+<h2 id="bash-completion">bash-completion</h2>
+
+<p>命令自动补全增强</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nb">install </span>bash-completion <span class="nt">-y</span>
+</code></pre></div></div>
+<h2 id="主机名">主机名</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hostnamectl <span class="nt">-h</span>
+set-hostname &lt;<span class="nb">hostname</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="docker">docker</h2>
+
+<p><code class="language-plaintext highlighter-rouge">uname -a</code> 检查linux内核至少3.8，建议3.10以上</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum update <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+yum <span class="nb">install </span>yum-utils device-mapper-persistent-data lvm2 <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+yum-config-manager <span class="nt">--add-repo</span> http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum list docker-ce <span class="nt">--showduplicates</span> | <span class="nb">sort</span> <span class="nt">-r</span>  <span class="c"># 查看所有版本</span>
+yum <span class="nb">install</span> <span class="o">[</span>docker-ce-18.03.1.ce-1.el7.centos] <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+systemctl start docker <span class="p">;</span> systemctl <span class="nb">enable </span>docker
+docker version  <span class="c"># 检查是否安装成功</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull &lt;image&gt;  <span class="c"># 抓取镜像</span>
+docker image <span class="nb">ls</span>  <span class="c"># 列出所有镜像</span>
+docker container <span class="nb">ls
+</span>docker ps <span class="nt">-a</span>  <span class="c"># 列出所有容器</span>
+
+docker run &lt;image&gt; <span class="o">[</span><span class="nt">--name</span> &lt;container&gt;]  <span class="c"># 在容器中运行镜像</span>
+docker start|stop|restart|kill &lt;container&gt;  <span class="c"># 容器控制</span>
+docker logs &lt;container&gt;  <span class="c"># 容器日志</span>
+</code></pre></div></div>
+
+<h2 id="mysql">MySQL</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nb">install </span>mysql mysql-devel
+</code></pre></div></div>
+
+<p>服务端，<code class="language-plaintext highlighter-rouge">mariadb</code>或<code class="language-plaintext highlighter-rouge">mysql-server</code></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">--------</span>
+yum <span class="nb">install </span>mariadb<span class="k">*</span>  <span class="c"># to replace mysql-server</span>
+<span class="nt">--------</span>
+weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+rpm <span class="nt">-ivh</span> mysql-community-release-el7-5.noarch.rpm
+yum <span class="nb">install </span>mysql-community-server
+
+vi /etc/systemd/system/mysql.service -&gt; <span class="o">[</span>service] <span class="nv">Type</span><span class="o">=</span>simple, root:root
+注释/etc/my.cnf  pid-file
+<span class="nt">--------</span>
+</code></pre></div></div>
+
+<p>编码配置</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="o">&gt;&gt;</span> /etc/my.cnf <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+[mysql]
+  default-character-set=utf8
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>semanage permissive -a mysqld_t
+firewall-cmd --zone=public --permanent --add-port=3306/tcp
+firewall-cmd --reload
+</code></pre></div></div>
+
+<p>启动服务</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl start mariadb/mysql
+systemctl <span class="nb">enable</span> ...
+mysql <span class="nt">-u</span> root
+</code></pre></div></div>
+
+<p>设置密码</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">set </span>password <span class="k">for</span> <span class="s1">'root'</span>@<span class="s1">'localhost'</span> <span class="o">=</span>password<span class="o">(</span><span class="s1">'&lt;password&gt;'</span><span class="o">)</span> <span class="p">;</span>
+<span class="o">&gt;</span> create DATABASE gogs <span class="p">;</span>
+<span class="o">&gt;</span> insert into mysql.user<span class="o">(</span>Host,User,Password<span class="o">)</span> values<span class="o">(</span><span class="s2">"localhost"</span>,<span class="s2">"gogs"</span>,password<span class="o">(</span><span class="s2">"gogsmysql"</span><span class="o">))</span> <span class="p">;</span>
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/2020/11/06/centos_install.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading"></h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name"></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

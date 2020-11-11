@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-11T21:04:34+08:00</updated><id>http://localhost:4000/feed.xml</id><entry><title type="html">Gitea Installation Guide</title><link href="http://localhost:4000/2020/11/10/gitea_install.html" rel="alternate" type="text/html" title="Gitea Installation Guide" /><published>2020-11-10T00:00:00+08:00</published><updated>2020-11-10T00:00:00+08:00</updated><id>http://localhost:4000/2020/11/10/gitea_install</id><content type="html" xml:base="http://localhost:4000/2020/11/10/gitea_install.html">&lt;h2 id=&quot;install-with-docker-compose&quot;&gt;Install with Docker-Compose&lt;/h2&gt;
+
+&lt;p&gt;Relay on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Add user “git” to group “docker” to run docker-compose in user “git”&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpassed &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; git docker
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Docker-compose&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;su git
+&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;gitea &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;gitea
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; docker-compose.yml &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;EOF&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+version: &quot;3&quot;
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:1
+    container_name: gitea
+    environment:
+      - USER_UID=1002  # UID of git
+      - USER_GID=1002  # GID of git
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - /home/git/data:/data  # mount, HOST:docker
+      - /etc/timezone:/etc/timezone:ro  # ro: read only
+      - /etc/localtime:/etc/localtime:ro
+    ports:  # port mapping, HOST:docker
+      - &quot;10080:3000&quot;  # web for gitea
+      - &quot;10022:22&quot;  # ssh for gitea
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOF
+&lt;/span&gt;docker-compose up &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# run in background&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Visit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ip:10080/install&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;(You may make a port mapping on router &amp;lt;outer ip&amp;gt;, 10022-&amp;gt;10022, 10080-&amp;gt;10080)&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;simplily choose SQLite3 for database&lt;/li&gt;
+  &lt;li&gt;fill SSH domain and port with &lt;strong&gt;External Domain and Port&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;outer ip&amp;gt;:10022&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;fill HTTP port with &lt;strong&gt;Internal Port&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;default &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3000&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;fill basic URL with &lt;strong&gt;External URL&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://&amp;lt;outer ip&amp;gt;:10080&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Done!&lt;/p&gt;</content><author><name></name></author><summary type="html">Install with Docker-Compose Relay on docker, docker-compose Add user “git” to group “docker” to run docker-compose in user “git” gpassed -a git docker Docker-compose su git mkdir gitea ; cd gitea cat &amp;gt; docker-compose.yml &amp;lt;&amp;lt; EOF version: &quot;3&quot; networks: gitea: external: false services: server: image: gitea/gitea:1 container_name: gitea environment: - USER_UID=1002 # UID of git - USER_GID=1002 # GID of git restart: always networks: - gitea volumes: - /home/git/data:/data # mount, HOST:docker - /etc/timezone:/etc/timezone:ro # ro: read only - /etc/localtime:/etc/localtime:ro ports: # port mapping, HOST:docker - &quot;10080:3000&quot; # web for gitea - &quot;10022:22&quot; # ssh for gitea EOF docker-compose up -d # run in background Visit ip:10080/install (You may make a port mapping on router &amp;lt;outer ip&amp;gt;, 10022-&amp;gt;10022, 10080-&amp;gt;10080) simplily choose SQLite3 for database fill SSH domain and port with External Domain and Port &amp;lt;outer ip&amp;gt;:10022 fill HTTP port with Internal Port default 3000 fill basic URL with External URL http://&amp;lt;outer ip&amp;gt;:10080 Done!</summary></entry><entry><title type="html">Centos7 Installation</title><link href="http://localhost:4000/2020/11/06/centos_install.html" rel="alternate" type="text/html" title="Centos7 Installation" /><published>2020-11-06T00:00:00+08:00</published><updated>2020-11-06T00:00:00+08:00</updated><id>http://localhost:4000/2020/11/06/centos_install</id><content type="html" xml:base="http://localhost:4000/2020/11/06/centos_install.html">&lt;p&gt;管理服务&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemctl [status|start|stop|restart|enable|disable] &amp;lt;servicename&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;网络&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ip [addr]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;终端提示音关闭&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setterm -blength n&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;yum查找包及包含命令的包&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum search &amp;lt;package&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum provides &amp;lt;command&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;selinux&quot;&gt;SELinux&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sestatus&lt;/code&gt;查看SELinux状态&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;enforcing&lt;/em&gt;    强制模式，运行中，限制domian/type&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;permissive&lt;/em&gt;   宽容模式，运行中，不限制但是警告&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;disabled&lt;/em&gt;     关闭，没有运行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getenforce&lt;/code&gt; 查看当前模式&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setenforce [0|1]&lt;/code&gt; 运行模式切换，0-&amp;gt;宽容模式，1-&amp;gt;强制模式&lt;/p&gt;
+
+&lt;p&gt;关闭SELinux需修改 &lt;em&gt;/etc/selinux/config&lt;/em&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELINUX=disabled&lt;/code&gt; 并重启系统。&lt;/p&gt;
+
+&lt;p&gt;SELinux端口管理&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;semanage port &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 显示所有端口&lt;/span&gt;
+semanage port &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;|-d] &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; &amp;lt;&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ssh_port_t]&amp;gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; tcp|udp &amp;lt;port number&amp;gt;  &lt;span class=&quot;c&quot;&gt;# 为指定策略增加或删除端口&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum install [setools-console-3.3.8-4.el7.x86_64]&lt;/code&gt; 安装&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;seinfo&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sesearch&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;firewall&quot;&gt;firewall&lt;/h2&gt;
+
+&lt;p&gt;服务，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;firewalld&lt;/code&gt;，管理命令，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;firewall-cmd&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;firewall-cmd &lt;span class=&quot;nt&quot;&gt;--get-active-zones&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 获取当前活动区域&lt;/span&gt;
+firewall-cmd &lt;span class=&quot;nt&quot;&gt;--get-service&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 获取所有支持的服务&lt;/span&gt;
+firewall-cmd &lt;span class=&quot;nt&quot;&gt;--reload&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 重新加载防火墙&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;部分参数
+|  |  |
+|:-|:-|
+|–permanent    |永久加入规则，不影响当前运行状态|
+|–zone=&amp;lt;zone&amp;gt;  |对选择的区域进行操作|
+|–list-services |列出当前启用的服务|
+|–list-ports    |列出当前启用的端口|
+|–add-service=  |启用服务|
+|–add-port=[12345/tcp]  |启用端口|&lt;/p&gt;
+
+&lt;p&gt;添加富规则：&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--add-rich-rule=&quot;rule family='ipv4' source address='192.168.0.4/24' service name='http' accept&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;允许ip192.168.0.4/24访问http&lt;/p&gt;
+
+&lt;p&gt;移除富规则：&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--remove-rich-rule=&quot;&amp;lt;above&amp;gt;&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ssh&quot;&gt;SSH&lt;/h2&gt;
+
+&lt;p&gt;配置文件 &lt;em&gt;/etc/ssh/sshd.config&lt;/em&gt; &lt;a href=&quot;http://www.04007.cn/article/538.html&quot;&gt;参数表&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpm &lt;span class=&quot;nt&quot;&gt;-qa&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;ssh  &lt;span class=&quot;c&quot;&gt;# 检查是否安装&lt;/span&gt;
+yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;openssh-server  &lt;span class=&quot;c&quot;&gt;# yum安装&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;服务，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sshd&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;chrony-同步时间&quot;&gt;chrony 同步时间&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rpm &lt;span class=&quot;nt&quot;&gt;-qa&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;chrony
+yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;chrony
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;服务，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chrony&lt;/code&gt;，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;start&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enable&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;若开启防火墙，允许NTP服务&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;firewall-cmd &lt;span class=&quot;nt&quot;&gt;--add-service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ntp &lt;span class=&quot;nt&quot;&gt;--permanent&lt;/span&gt;
+firewall-cmd &lt;span class=&quot;nt&quot;&gt;--reload&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;禁止普通用户su&quot;&gt;禁止普通用户su&lt;/h2&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;auth    required   pam_wheel.so  use_uid&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; /etc/pam.d/su
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SU_WHEEL_ONLY yes&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; /etc/login.defs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;允许指定用户su&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;usermod &lt;span class=&quot;nt&quot;&gt;-G&lt;/span&gt; wheel &amp;lt;username&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;bash-completion&quot;&gt;bash-completion&lt;/h2&gt;
+
+&lt;p&gt;命令自动补全增强&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bash-completion &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;主机名&quot;&gt;主机名&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hostnamectl &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt;
+set-hostname &amp;lt;&lt;span class=&quot;nb&quot;&gt;hostname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;docker&quot;&gt;docker&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uname -a&lt;/code&gt; 检查linux内核至少3.8，建议3.10以上&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum update &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;yum-utils device-mapper-persistent-data lvm2 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+yum-config-manager &lt;span class=&quot;nt&quot;&gt;--add-repo&lt;/span&gt; http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum list docker-ce &lt;span class=&quot;nt&quot;&gt;--showduplicates&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sort&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 查看所有版本&lt;/span&gt;
+yum &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;docker-ce-18.03.1.ce-1.el7.centos] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+systemctl start docker &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;docker
+docker version  &lt;span class=&quot;c&quot;&gt;# 检查是否安装成功&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker pull &amp;lt;image&amp;gt;  &lt;span class=&quot;c&quot;&gt;# 抓取镜像&lt;/span&gt;
+docker image &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 列出所有镜像&lt;/span&gt;
+docker container &lt;span class=&quot;nb&quot;&gt;ls
+&lt;/span&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 列出所有容器&lt;/span&gt;
+
+docker run &amp;lt;image&amp;gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &amp;lt;container&amp;gt;]  &lt;span class=&quot;c&quot;&gt;# 在容器中运行镜像&lt;/span&gt;
+docker start|stop|restart|kill &amp;lt;container&amp;gt;  &lt;span class=&quot;c&quot;&gt;# 容器控制&lt;/span&gt;
+docker logs &amp;lt;container&amp;gt;  &lt;span class=&quot;c&quot;&gt;# 容器日志&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;mysql&quot;&gt;MySQL&lt;/h2&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;mysql mysql-devel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;服务端，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mariadb&lt;/code&gt;或&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mysql-server&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;
+yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;mariadb&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# to replace mysql-server&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;
+weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+rpm &lt;span class=&quot;nt&quot;&gt;-ivh&lt;/span&gt; mysql-community-release-el7-5.noarch.rpm
+yum &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;mysql-community-server
+
+vi /etc/systemd/system/mysql.service -&amp;gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;service] &lt;span class=&quot;nv&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;simple, root:root
+注释/etc/my.cnf  pid-file
+&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;编码配置&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; /etc/my.cnf &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;EOF&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+[mysql]
+  default-character-set=utf8
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOF
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;semanage permissive -a mysqld_t
+firewall-cmd --zone=public --permanent --add-port=3306/tcp
+firewall-cmd --reload
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;启动服务&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl start mariadb/mysql
+systemctl &lt;span class=&quot;nb&quot;&gt;enable&lt;/span&gt; ...
+mysql &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; root
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;设置密码&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;password &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;@&lt;span class=&quot;s1&quot;&gt;'localhost'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;password&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&amp;lt;password&amp;gt;'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; create DATABASE gogs &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; insert into mysql.user&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Host,User,Password&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; values&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;localhost&quot;&lt;/span&gt;,&lt;span class=&quot;s2&quot;&gt;&quot;gogs&quot;&lt;/span&gt;,password&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;gogsmysql&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>ixsluo</name></author><summary type="html">管理服务 systemctl [status|start|stop|restart|enable|disable] &amp;lt;servicename&amp;gt; 网络 ip [addr] 终端提示音关闭 setterm -blength n yum查找包及包含命令的包 yum search &amp;lt;package&amp;gt; yum provides &amp;lt;command&amp;gt; SELinux sestatus查看SELinux状态 enforcing 强制模式，运行中，限制domian/type permissive 宽容模式，运行中，不限制但是警告 disabled 关闭，没有运行 getenforce 查看当前模式 setenforce [0|1] 运行模式切换，0-&amp;gt;宽容模式，1-&amp;gt;强制模式 关闭SELinux需修改 /etc/selinux/config -&amp;gt; SELINUX=disabled 并重启系统。 SELinux端口管理 semanage port -l # 显示所有端口 semanage port [-a|-d] -t &amp;lt;type, [ssh_port_t]&amp;gt; -p tcp|udp &amp;lt;port number&amp;gt; # 为指定策略增加或删除端口 yum install [setools-console-3.3.8-4.el7.x86_64] 安装seinfo、sesearch firewall 服务，firewalld，管理命令，firewall-cmd firewall-cmd --get-active-zones # 获取当前活动区域 firewall-cmd --get-service # 获取所有支持的服务 firewall-cmd --reload # 重新加载防火墙 部分参数 | | | |:-|:-| |–permanent |永久加入规则，不影响当前运行状态| |–zone=&amp;lt;zone&amp;gt; |对选择的区域进行操作| |–list-services |列出当前启用的服务| |–list-ports |列出当前启用的端口| |–add-service= |启用服务| |–add-port=[12345/tcp] |启用端口| 添加富规则：--add-rich-rule=&quot;rule family='ipv4' source address='192.168.0.4/24' service name='http' accept 允许ip192.168.0.4/24访问http 移除富规则：--remove-rich-rule=&quot;&amp;lt;above&amp;gt;&quot; SSH 配置文件 /etc/ssh/sshd.config 参数表 rpm -qa | grep ssh # 检查是否安装 yum install openssh-server # yum安装 服务，sshd chrony 同步时间 rpm -qa | grep chrony yum install chrony 服务，chrony，start -&amp;gt; enable 若开启防火墙，允许NTP服务 firewall-cmd --add-service=ntp --permanent firewall-cmd --reload 禁止普通用户su cat &quot;auth required pam_wheel.so use_uid&quot; &amp;gt;&amp;gt; /etc/pam.d/su cat &quot;SU_WHEEL_ONLY yes&quot; &amp;gt;&amp;gt; /etc/login.defs 允许指定用户su usermod -G wheel &amp;lt;username&amp;gt; bash-completion 命令自动补全增强 yum install bash-completion -y 主机名 hostnamectl -h set-hostname &amp;lt;hostname&amp;gt; docker uname -a 检查linux内核至少3.8，建议3.10以上 yum update [-y] yum install yum-utils device-mapper-persistent-data lvm2 [-y] yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo yum list docker-ce --showduplicates | sort -r # 查看所有版本 yum install [docker-ce-18.03.1.ce-1.el7.centos] [-y] systemctl start docker ; systemctl enable docker docker version # 检查是否安装成功 docker pull &amp;lt;image&amp;gt; # 抓取镜像 docker image ls # 列出所有镜像 docker container ls docker ps -a # 列出所有容器 docker run &amp;lt;image&amp;gt; [--name &amp;lt;container&amp;gt;] # 在容器中运行镜像 docker start|stop|restart|kill &amp;lt;container&amp;gt; # 容器控制 docker logs &amp;lt;container&amp;gt; # 容器日志 MySQL yum install mysql mysql-devel 服务端，mariadb或mysql-server -------- yum install mariadb* # to replace mysql-server -------- weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm rpm -ivh mysql-community-release-el7-5.noarch.rpm yum install mysql-community-server vi /etc/systemd/system/mysql.service -&amp;gt; [service] Type=simple, root:root 注释/etc/my.cnf pid-file -------- 编码配置 cat &amp;gt;&amp;gt; /etc/my.cnf &amp;lt;&amp;lt; EOF [mysql] default-character-set=utf8 EOF semanage permissive -a mysqld_t firewall-cmd --zone=public --permanent --add-port=3306/tcp firewall-cmd --reload 启动服务 systemctl start mariadb/mysql systemctl enable ... mysql -u root 设置密码 &amp;gt; set password for 'root'@'localhost' =password('&amp;lt;password&amp;gt;') ; &amp;gt; create DATABASE gogs ; &amp;gt; insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;gogs&quot;,password(&quot;gogsmysql&quot;)) ;</summary></entry></feed>
