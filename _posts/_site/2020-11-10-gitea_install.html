@@ -1,0 +1,64 @@
+<h1 id="gitea">Gitea</h1>
+
+<h2 id="install-with-docker-compose">Install with Docker-Compose</h2>
+
+<p>Relay on <code class="language-plaintext highlighter-rouge">docker</code>, <code class="language-plaintext highlighter-rouge">docker-compose</code></p>
+
+<p>Add user “git” to group “docker” to run docker-compose in user “git”</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpassed <span class="nt">-a</span> git docker
+</code></pre></div></div>
+
+<p>Docker-compose</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su git
+<span class="nb">mkdir </span>gitea <span class="p">;</span> <span class="nb">cd </span>gitea
+<span class="nb">cat</span> <span class="o">&gt;</span> docker-compose.yml <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+version: "3"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:1
+    container_name: gitea
+    environment:
+      - USER_UID=1002  # UID of git
+      - USER_GID=1002  # GID of git
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - /home/git/data:/data  # mount, HOST:docker
+      - /etc/timezone:/etc/timezone:ro  # ro: read only
+      - /etc/localtime:/etc/localtime:ro
+    ports:  # port mapping, HOST:docker
+      - "10080:3000"  # web for gitea
+      - "10022:22"  # ssh for gitea
+</span><span class="no">EOF
+</span>docker-compose up <span class="nt">-d</span>  <span class="c"># run in background</span>
+</code></pre></div></div>
+
+<p>Visit <code class="language-plaintext highlighter-rouge">ip:10080/install</code></p>
+
+<p>(Note that port mapping already been made on router 59.72.115.44, 10022-&gt;10022, 10080-&gt;10080)</p>
+<ul>
+  <li>simplily choose SQLite3 for database</li>
+  <li>fill SSH domain and port with <strong>External Domain and Port</strong>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">59.72.115.44:10022</code></li>
+    </ul>
+  </li>
+  <li>fill HTTP port with <strong>Internal Port</strong>
+    <ul>
+      <li>default <code class="language-plaintext highlighter-rouge">3000</code></li>
+    </ul>
+  </li>
+  <li>fill basic URL with <strong>External URL</strong>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://59.72.115.44:10080</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>Done!</p>

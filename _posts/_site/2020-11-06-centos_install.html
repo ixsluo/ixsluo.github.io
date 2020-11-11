@@ -1,0 +1,179 @@
+<h1 id="centos7-installation-guildline">Centos7 Installation Guildline</h1>
+
+<p>管理服务</p>
+
+<p><code class="language-plaintext highlighter-rouge">systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt;</code></p>
+
+<p>网络</p>
+
+<p><code class="language-plaintext highlighter-rouge">ip [addr]</code></p>
+
+<p>终端提示音关闭</p>
+
+<p><code class="language-plaintext highlighter-rouge">setterm -blength n</code></p>
+
+<p>yum查找包及包含命令的包</p>
+
+<p><code class="language-plaintext highlighter-rouge">yum search &lt;package&gt;</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">yum provides &lt;command&gt;</code></p>
+
+<h2 id="selinux">SELinux</h2>
+
+<p><code class="language-plaintext highlighter-rouge">sestatus</code>查看SELinux状态</p>
+
+<ul>
+  <li><em>enforcing</em>    强制模式，运行中，限制domian/type</li>
+  <li><em>permissive</em>   宽容模式，运行中，不限制但是警告</li>
+  <li><em>disabled</em>     关闭，没有运行</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">getenforce</code> 查看当前模式</p>
+
+<p><code class="language-plaintext highlighter-rouge">setenforce [0|1]</code> 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式</p>
+
+<p>关闭SELinux需修改 <em>/etc/selinux/config</em> -&gt; <code class="language-plaintext highlighter-rouge">SELINUX=disabled</code> 并重启系统。</p>
+
+<p>SELinux端口管理</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>semanage port <span class="nt">-l</span>  <span class="c"># 显示所有端口</span>
+semanage port <span class="o">[</span><span class="nt">-a</span>|-d] <span class="nt">-t</span> &lt;<span class="nb">type</span>, <span class="o">[</span>ssh_port_t]&gt; <span class="nt">-p</span> tcp|udp &lt;port number&gt;  <span class="c"># 为指定策略增加或删除端口</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">yum install [setools-console-3.3.8-4.el7.x86_64]</code> 安装<code class="language-plaintext highlighter-rouge">seinfo</code>、<code class="language-plaintext highlighter-rouge">sesearch</code></p>
+
+<h2 id="firewall">firewall</h2>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">firewalld</code>，管理命令，<code class="language-plaintext highlighter-rouge">firewall-cmd</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firewall-cmd <span class="nt">--get-active-zones</span>  <span class="c"># 获取当前活动区域</span>
+firewall-cmd <span class="nt">--get-service</span>  <span class="c"># 获取所有支持的服务</span>
+firewall-cmd <span class="nt">--reload</span>  <span class="c"># 重新加载防火墙</span>
+</code></pre></div></div>
+
+<p>部分参数
+|  |  |
+|:-|:-|
+|–permanent    |永久加入规则，不影响当前运行状态|
+|–zone=&lt;zone&gt;  |对选择的区域进行操作|
+|–list-services |列出当前启用的服务|
+|–list-ports    |列出当前启用的端口|
+|–add-service=  |启用服务|
+|–add-port=[12345/tcp]  |启用端口|</p>
+
+<p>添加富规则：<code class="language-plaintext highlighter-rouge">--add-rich-rule="rule family='ipv4' source address='192.168.0.4/24' service name='http' accept</code></p>
+
+<p>允许ip192.168.0.4/24访问http</p>
+
+<p>移除富规则：<code class="language-plaintext highlighter-rouge">--remove-rich-rule="&lt;above&gt;"</code></p>
+
+<h2 id="ssh">SSH</h2>
+
+<p>配置文件 <em>/etc/ssh/sshd.config</em> <a href="http://www.04007.cn/article/538.html">参数表</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rpm <span class="nt">-qa</span> | <span class="nb">grep </span>ssh  <span class="c"># 检查是否安装</span>
+yum <span class="nb">install </span>openssh-server  <span class="c"># yum安装</span>
+</code></pre></div></div>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">sshd</code></p>
+
+<h2 id="chrony-同步时间">chrony 同步时间</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rpm <span class="nt">-qa</span> | <span class="nb">grep </span>chrony
+yum <span class="nb">install </span>chrony
+</code></pre></div></div>
+
+<p>服务，<code class="language-plaintext highlighter-rouge">chrony</code>，<code class="language-plaintext highlighter-rouge">start</code> -&gt; <code class="language-plaintext highlighter-rouge">enable</code></p>
+
+<p>若开启防火墙，允许NTP服务</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>firewall-cmd <span class="nt">--add-service</span><span class="o">=</span>ntp <span class="nt">--permanent</span>
+firewall-cmd <span class="nt">--reload</span>
+</code></pre></div></div>
+
+<h2 id="禁止普通用户su">禁止普通用户su</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="s2">"auth    required   pam_wheel.so  use_uid"</span> <span class="o">&gt;&gt;</span> /etc/pam.d/su
+<span class="nb">cat</span> <span class="s2">"SU_WHEEL_ONLY yes"</span> <span class="o">&gt;&gt;</span> /etc/login.defs
+</code></pre></div></div>
+
+<p>允许指定用户su</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>usermod <span class="nt">-G</span> wheel &lt;username&gt;
+</code></pre></div></div>
+
+<h2 id="bash-completion">bash-completion</h2>
+
+<p>命令自动补全增强</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nb">install </span>bash-completion <span class="nt">-y</span>
+</code></pre></div></div>
+<h2 id="主机名">主机名</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hostnamectl <span class="nt">-h</span>
+set-hostname &lt;<span class="nb">hostname</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="docker">docker</h2>
+
+<p><code class="language-plaintext highlighter-rouge">uname -a</code> 检查linux内核至少3.8，建议3.10以上</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum update <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+yum <span class="nb">install </span>yum-utils device-mapper-persistent-data lvm2 <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+yum-config-manager <span class="nt">--add-repo</span> http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum list docker-ce <span class="nt">--showduplicates</span> | <span class="nb">sort</span> <span class="nt">-r</span>  <span class="c"># 查看所有版本</span>
+yum <span class="nb">install</span> <span class="o">[</span>docker-ce-18.03.1.ce-1.el7.centos] <span class="o">[</span><span class="nt">-y</span><span class="o">]</span>
+systemctl start docker <span class="p">;</span> systemctl <span class="nb">enable </span>docker
+docker version  <span class="c"># 检查是否安装成功</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull &lt;image&gt;  <span class="c"># 抓取镜像</span>
+docker image <span class="nb">ls</span>  <span class="c"># 列出所有镜像</span>
+docker container <span class="nb">ls
+</span>docker ps <span class="nt">-a</span>  <span class="c"># 列出所有容器</span>
+
+docker run &lt;image&gt; <span class="o">[</span><span class="nt">--name</span> &lt;container&gt;]  <span class="c"># 在容器中运行镜像</span>
+docker start|stop|restart|kill &lt;container&gt;  <span class="c"># 容器控制</span>
+docker logs &lt;container&gt;  <span class="c"># 容器日志</span>
+</code></pre></div></div>
+
+<h2 id="mysql">MySQL</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum <span class="nb">install </span>mysql mysql-devel
+</code></pre></div></div>
+
+<p>服务端，<code class="language-plaintext highlighter-rouge">mariadb</code>或<code class="language-plaintext highlighter-rouge">mysql-server</code></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">--------</span>
+yum <span class="nb">install </span>mariadb<span class="k">*</span>  <span class="c"># to replace mysql-server</span>
+<span class="nt">--------</span>
+weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+rpm <span class="nt">-ivh</span> mysql-community-release-el7-5.noarch.rpm
+yum <span class="nb">install </span>mysql-community-server
+
+vi /etc/systemd/system/mysql.service -&gt; <span class="o">[</span>service] <span class="nv">Type</span><span class="o">=</span>simple, root:root
+注释/etc/my.cnf  pid-file
+<span class="nt">--------</span>
+</code></pre></div></div>
+
+<p>编码配置</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="o">&gt;&gt;</span> /etc/my.cnf <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh">
+[mysql]
+  default-character-set=utf8
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>semanage permissive -a mysqld_t
+firewall-cmd --zone=public --permanent --add-port=3306/tcp
+firewall-cmd --reload
+</code></pre></div></div>
+
+<p>启动服务</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl start mariadb/mysql
+systemctl <span class="nb">enable</span> ...
+mysql <span class="nt">-u</span> root
+</code></pre></div></div>
+
+<p>设置密码</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">set </span>password <span class="k">for</span> <span class="s1">'root'</span>@<span class="s1">'localhost'</span> <span class="o">=</span>password<span class="o">(</span><span class="s1">'&lt;password&gt;'</span><span class="o">)</span> <span class="p">;</span>
+<span class="o">&gt;</span> create DATABASE gogs <span class="p">;</span>
+<span class="o">&gt;</span> insert into mysql.user<span class="o">(</span>Host,User,Password<span class="o">)</span> values<span class="o">(</span><span class="s2">"localhost"</span>,<span class="s2">"gogs"</span>,password<span class="o">(</span><span class="s2">"gogsmysql"</span><span class="o">))</span> <span class="p">;</span>
+</code></pre></div></div>
