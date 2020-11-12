@@ -6,30 +6,10 @@ layout: home
 ---
 
 
-## Welcome to ixsluo's GitHub Pages
+# Welcome to Xiaoshan's GitHub Pages
 
-### Markdown
+![photo @2x]({{ site.url }}/images/avatar.jpg){:height="100" width="100"}
 
-This page is build with markdown
+This page is build with *markdown*. For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-The following is my post:
+## -----------------------------------

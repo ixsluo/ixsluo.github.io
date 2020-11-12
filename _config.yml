@@ -1,1 +1,18 @@
 theme: minima
+#title: ixsluo.github.io
+title: Blog --- Xiaoshan Luo
+email: xiaoshan.luo@outlook.com
+author: Xiaoshan Luo
+
+description: >-  # this means to ignore newlines until "baseurl:"
+  My Homepage
+       
+twitter_username:
+github_username: ixsluo
+
+# Global
+timezone: Asia/Shang_Hai
+endocing: utf-8
+
+plugins:
+        - jekyll-feed
