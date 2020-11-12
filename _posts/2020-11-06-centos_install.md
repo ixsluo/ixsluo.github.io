@@ -1,13 +1,15 @@
 ---
 layout: post
-title: "Centos7 Installation"
+title: "Centos7 Installation Guildline"
 author: ixsluo
 date: 2020-11-06 +0800
 tag:
 
-# Centos7 Installation Guildline
 ---
 
+<!--
+# Centos7 Installation Guildline
+-->
 
 管理服务
 

@@ -1,11 +1,14 @@
 ---
 
-title: Gitea Installation Guide
+title: Gitea Installation Guildline
 layout: post
 date: 2020-11-10 +0800
 
-# Gitea
 ---
+
+<!--
+# Gitea Installation Guildline
+-->
 
 ## Install with Docker-Compose
 
