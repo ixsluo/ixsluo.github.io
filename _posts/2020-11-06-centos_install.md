@@ -11,6 +11,23 @@ tag:
 # Centos7 Installation Guildline
 -->
 
+![centos](https://img.shields.io/badge/centos-installation-blue?logo=centos&logoColor=orange&labelColor=)
+
+- [基本命令](#基本命令)
+- [主机名](#主机名)
+- [安全与远程登录](#安全与远程登录)
+  - [SELinux](#selinux)
+  - [firewall](#firewall)
+  - [禁止普通用户su](#禁止普通用户su)
+  - [SSH](#ssh)
+- [chrony 同步时间](#chrony-同步时间)
+- [软件安装](#软件安装)
+  - [bash-completion](#bash-completion)
+  - [docker](#docker)
+  - [MySQL](#mysql)
+
+## 基本命令
+
 管理服务
 
 `systemctl [status|start|stop|restart|enable|disable] <servicename>`
@@ -29,7 +46,16 @@ yum查找包及包含命令的包
 
 `yum provides <command>`
 
-## SELinux
+## 主机名
+
+```bash
+hostnamectl -h
+set-hostname <hostname>
+```
+
+## 安全与远程登录
+
+### SELinux
 
 `sestatus`查看SELinux状态
 
@@ -52,7 +78,7 @@ semanage port [-a|-d] -t <type, [ssh_port_t]> -p tcp|udp <port number>  # 为指
 
 `yum install [setools-console-3.3.8-4.el7.x86_64]` 安装`seinfo`、`sesearch`
 
-## firewall
+### firewall
 
 服务，`firewalld`，管理命令，`firewall-cmd`
 
@@ -65,7 +91,7 @@ firewall-cmd --reload  # 重新加载防火墙
 部分参数
 |  |  |
 |:-|:-|
-|--permanent    |永久加入规则，不影响当前运行状态|
+|--permanent     |永久加入规则，不影响当前运行状态|
 |--zone=\<zone>  |对选择的区域进行操作|
 |--list-services |列出当前启用的服务|
 |--list-ports    |列出当前启用的端口|
@@ -78,10 +104,21 @@ firewall-cmd --reload  # 重新加载防火墙
 
 移除富规则：`--remove-rich-rule="<above>"`
 
+### 禁止普通用户su
 
-## SSH
+```sh
+cat "auth    required   pam_wheel.so  use_uid" >> /etc/pam.d/su
+cat "SU_WHEEL_ONLY yes" >> /etc/login.defs
+```
 
-配置文件 */etc/ssh/sshd.config* [参数表](http://www.04007.cn/article/538.html)
+允许指定用户su
+```sh
+usermod -G wheel <username>
+```
+
+### SSH
+
+配置文件 */etc/ssh/sshd.config*，[参数表](http://www.04007.cn/article/538.html)
 
 ```bash
 rpm -qa | grep ssh  # 检查是否安装
@@ -106,33 +143,17 @@ firewall-cmd --add-service=ntp --permanent
 firewall-cmd --reload
 ```
 
-## 禁止普通用户su
+## 软件安装
 
-```sh
-cat "auth    required   pam_wheel.so  use_uid" >> /etc/pam.d/su
-cat "SU_WHEEL_ONLY yes" >> /etc/login.defs
-```
-
-允许指定用户su
-```sh
-usermod -G wheel <username>
-```
-
-## bash-completion
+### bash-completion
 
 命令自动补全增强
 
 ```bash
 yum install bash-completion -y
 ```
-## 主机名
 
-```bash
-hostnamectl -h
-set-hostname <hostname>
-```
-
-## docker
+### docker
 
 `uname -a` 检查linux内核至少3.8，建议3.10以上
 
@@ -157,7 +178,7 @@ docker start|stop|restart|kill <container>  # 容器控制
 docker logs <container>  # 容器日志
 ```
 
-## MySQL
+### MySQL
 
 ```sh
 yum install mysql mysql-devel
