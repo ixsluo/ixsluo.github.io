@@ -23,7 +23,9 @@ tag:
 - [chrony 同步时间](#chrony-同步时间)
 - [软件安装](#软件安装)
   - [bash-completion](#bash-completion)
-  - [docker](#docker)
+  - [Git](#git)
+  - [Commitizen](#commitizen)
+  - [Docker](#docker)
   - [MySQL](#mysql)
 
 ## 基本命令
@@ -153,7 +155,51 @@ firewall-cmd --reload
 yum install bash-completion -y
 ```
 
-### docker
+### Git
+
+`yum install git -y`
+
+### Commitizen
+
+Commitizen用于规范git提交信息。测试通过 `node=10/12`，需要 `npm>=6`
+
+yum默认nodejs版本过低，建议手动安装
+```bash
+wget https://nodejs.org/dist/v14.15.0/node-v14.15.0-linux-x64.tar.xz
+xz node-***.tar.xz
+tar -xvf node-***.tar
+mv node-*** /usr/local/node
+
+cat >> /etc/profile.d/custom.sh << EOF
+# set for nodejs
+export NODE_HOME=/usr/local/node
+export PATH=$NODE_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/custom.sh
+node -v
+npm -v
+```
+
+**本说明针对非node项目**
+```
+# 换淘宝源  --registry=https://registry.npm.taobao.org
+npm install -g commitizen git-cz  # 全局安装
+npm ls -g -depth=0  # 检查是否安装成功
+```
+
+- Angular格式
+  - `npm install -g cz-conventional-changelog`
+  - `echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc`
+- 自定义格式
+  - `npm install -g cz-customizable`
+  - `echo '{ "path": "cz-customization" }' > ~/.czrc`
+  - `cp /usr/local/node/lib/node_modules/cz-customizable/cz-config-EXAMPLE.js /home/<user>/.cz-config.js ; chown ***`
+  - 可根据模板文件修改提交提示
+
+**使用`git cz -s`进行提交**
+
+### Docker
 
 `uname -a` 检查linux内核至少3.8，建议3.10以上
 
