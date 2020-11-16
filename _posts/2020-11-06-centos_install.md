@@ -52,7 +52,7 @@ yum查找包及包含命令的包
 
 ```bash
 hostnamectl -h
-set-hostname <hostname>
+hostnamectl set-hostname <hostname>
 ```
 
 ## 安全与远程登录
