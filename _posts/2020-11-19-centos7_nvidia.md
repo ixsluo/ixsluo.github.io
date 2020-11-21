@@ -50,10 +50,12 @@ reboot
 
 ## Nvidia驱动(450)
 
+- [Nvidia驱动下载](https://www.nvidia.cn/Download/index.aspx?lang=cn)
+
 1. 驱动安装
 ```bash
 chmod +x ~/apps/NVIDIA-Linux-*.run
-./apps/NVIDIA-Linux-*.run --kernel-source-path=/usr/src/kernels/3.10.*** -k $(uname -r)
+./apps/NVIDIA-Linux-*.run --kernel-source-path=/usr/src/kernels/3.10.*** -k $(uname -r) --no-drm
 nvidia-smi  # 查看是否安装成功
 ```
 
@@ -64,6 +66,7 @@ nvidia-smi  # 查看是否安装成功
 
 ## CUDA(11.0) 
 
+- [Nvidia下载地址](https://developer.nvidia.com/cuda-downloads)
 - [官方文档](https://docs.nvidia.com/cuda/)
 
 1. 安装
@@ -96,5 +99,5 @@ ldconfig
 tar -xzvf cudnn-x.x-linux-x64-v8.x.x.x.tgz
 cp cuda/include/cudnn*.h /usr/local/cuda/include
 cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
- chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
 ```

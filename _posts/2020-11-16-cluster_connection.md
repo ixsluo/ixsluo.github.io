@@ -271,16 +271,34 @@ umount -f /home
 ```
 
 - 自动挂载-autofs
+
+    未实现，转而使用挂载脚本
 ```bash
-# 软件包
-yum install autofs hesiod
-# 修改配置
-sed -i "s/^timeout = .*$/timeout = 0/g" /etc/autofs.conf
-echo /home  /etc/auto.nfs >> /etc/auto.master
-echo /opt  /etc/auto.nfs >> /etc/auto.master
-echo /home -rw -insecure -sync -no_root_squash main:/home >> /etc/auto.nfs
-echo /opt -rw -insecure -sync -no_root_squash main:/opt >> /etc/auto.nfs
+for node in 01 02 ; do
+    ssh node$node > /dev/null 2>&1 << EOF
+    mount -t nfs main:/home /home
+    mount -t nfs main:/opt /opt
+    exit
+EOF
+done
 ```
+
+: ```bash
+: # 软件包
+: yum install autofs hesiod
+: # 修改配置
+: sed -i "s/^timeout = .*$/timeout = 0/g" /etc/autofs.conf
+: echo /home  /etc/auto.nfs >> /etc/auto.master
+: echo /opt  /etc/auto.nfs >> /etc/auto.master
+: echo /home -rw -insecure -sync -no_root_squash main:/home >> /etc/auto.nfs
+: echo /opt -rw -insecure -sync -no_root_squash main:/opt >> /etc/auto.nfs
+: ```
+
+: ```bash
+: echo "main:/home /home nfs defaults 0 0" >> /etc/fstab
+: echo "main:/opt  /opt  nfs defaults 0 0" >> /etc/fstab
+: mount -a
+: ```
 
 ## 4. PBS安装
 
