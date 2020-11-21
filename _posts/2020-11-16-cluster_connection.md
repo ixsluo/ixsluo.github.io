@@ -147,7 +147,7 @@ yum localinstall ***.rpm
 
 ### 主节点
 
-	软件包：
+	软件包(yum install)：
 	ypserv ypbind yp-tool  # NIS
 	nfs-utils rpcbind  # NFS
 
@@ -168,7 +168,7 @@ systemctl restart rpcbind
 systemctl restart ypserv
 ```
 
-4. 建立或**更新**数据库，并再次重启
+4. 建立数据库，并再次重启
 ```bash
 /usr/lib64/yp/ypinit -m
 > Ctrl + D
@@ -176,6 +176,11 @@ systemctl restart ypserv
 systemctl restart ypserv
 ```
 
+5. **更新数据库**
+```bash
+# 当用户信息更新后(新建、修改等)
+make -C /var/yp
+```
 
 ### 计算节点
 
