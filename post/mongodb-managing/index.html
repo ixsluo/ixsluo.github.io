@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>MongoDB使用Docker安装与备份恢复 | ixsluo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ixsluo.github.io/favicon.ico?v=1658566555053">
+<link rel="stylesheet" href="https://ixsluo.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+容器中安装MongoDB
+拉取最新版本镜像
+docker pull mongo:latest
+
+运行镜像mongo，容器名mongo，启用mongo密码
+docker run -itd -p 27017:27017 --name mong..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ixsluo.github.io">
+        <img src="https://ixsluo.github.io/images/avatar.png?v=1658566555053" class="site-logo">
+        <h1 class="site-title">ixsluo</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://ixsluo.github.io/post/hello-gridea" class="site-nav">
+            Gridea
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ixsluo" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ixsluo.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">MongoDB使用Docker安装与备份恢复</h2>
+            <div class="post-date">2020-11-14</div>
+            
+            <div class="post-content" v-pre>
+              <!-- more -->
+<h2 id="容器中安装mongodb">容器中安装MongoDB</h2>
+<p>拉取最新版本镜像</p>
+<pre><code class="language-sh">docker pull mongo:latest
+</code></pre>
+<p>运行镜像mongo，容器名mongo，启用mongo密码</p>
+<pre><code class="language-sh">docker run -itd -p 27017:27017 --name mongo mongo --auth
+</code></pre>
+<p>进入MongoDB，并使用admin数据库</p>
+<pre><code class="language-sh">docker exec -it mongo mongo admin
+</code></pre>
+<p>设置管理账户admin</p>
+<pre><code class="language-txt">&gt; db.createUser({
+... user: &quot;admin&quot;,
+... pwd: &quot;******&quot;,
+... roles: [{
+...     role: &quot;userAdminAnyDatabase&quot;,
+...     db: &quot;admin&quot;}],
+... })
+
+验证连接
+&gt; db.auth('admin', '******')
+</code></pre>
+<h2 id="备份与恢复容器内的mongodb">备份与恢复容器内的MongoDB</h2>
+<p>容器与宿主机文件拷贝，容器内路径需加&lt;容器名:&gt;</p>
+<pre><code class="language-bash">docker cp &lt;hostdir&gt; &lt;container&gt;:&lt;dir&gt;
+</code></pre>
+<p>容器内进行备份与恢复</p>
+<pre><code class="language-bash">docker exec -it mongo /bin/bash  # 进入容器
+mongodump -d &lt;db&gt; -o &lt;dir&gt;  # 将db数据库备份至dir目录
+
+mongorestore -d &lt;db&gt; &lt;path&gt;  # 恢复数据库，-d重命名。&lt;path&gt; &lt;- &lt;dir&gt;/db
+mongorestore --dir &lt;dir&gt;  # 恢复整个备份目录
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ixsluo.github.io/post/gitea-installation-guildline/">
+                  <h3 class="post-title">
+                    Gitea安装与git commit
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

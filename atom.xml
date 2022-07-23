@@ -1,0 +1,1387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://ixsluo.github.io</id>
+    <title>ixsluo</title>
+    <updated>2022-07-23T08:55:58.116Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://ixsluo.github.io"/>
+    <link rel="self" href="https://ixsluo.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://ixsluo.github.io/images/avatar.png</logo>
+    <icon>https://ixsluo.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2022, ixsluo</rights>
+    <entry>
+        <title type="html"><![CDATA[图结构python库笔记]]></title>
+        <id>https://ixsluo.github.io/post/tu-jie-gou-python-ku-bi-ji/</id>
+        <link href="https://ixsluo.github.io/post/tu-jie-gou-python-ku-bi-ji/">
+        </link>
+        <updated>2022-07-22T13:57:33.000Z</updated>
+        <content type="html"><![CDATA[<!--more-->
+<p><ul class="markdownIt-TOC">
+<li><a href="#networkx">NetworkX</a>
+<ul>
+<li><a href="#numpy%E6%95%B0%E7%BB%84%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E5%88%9B%E5%BB%BA%E5%9B%BE">numpy数组邻接矩阵创建图</a></li>
+</ul>
+</li>
+<li><a href="#pyg">pyg</a>
+<ul>
+<li><a href="#torch_geometricutils"><code>torch_geometric.utils</code></a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="networkx"><a href="https://www.osgeo.cn/networkx/index.html">NetworkX</a></h1>
+<h2 id="numpy数组邻接矩阵创建图">numpy数组邻接矩阵创建图</h2>
+<ul>
+<li><code>nx.from_numpy_array(A, parallel_edges=False, create_using=None)</code><a href="https://www.osgeo.cn/networkx/reference/generated/networkx.convert_matrix.from_numpy_array.html#">ref</a>
+<ul>
+<li>默认创建<code>nx.Graph</code>，A中非对称部分只要存在一个则认为存在边，构成无向图</li>
+</ul>
+</li>
+</ul>
+<h1 id="pyg"><a href="https://pytorch-geometric.readthedocs.io/en/latest/notes/introduction.html">pyg</a></h1>
+<h2 id="torch_geometricutils"><code>torch_geometric.utils</code></h2>
+<ul>
+<li><code>dense_to_sparse(adj)</code> -&gt; <code>(edge_index, edge_attr)</code> ，转换邻接矩阵为COO格式edge_index</li>
+<li><code>to_dense_adj(edge_index, *)</code> -&gt; <code>adj</code>，形状(B, max_num_nodes, max_num_nodes)</li>
+<li><code>to_undirected(edge_index, *)</code> -&gt; <code>edge_index, [edge_attr]</code>，增加边以构成无向图，返回新的边，如果提供边属性则还会合并(add, mean, min, max, mul)重复的边属性，并返回。(i, j)与(j, i)被认为是重复的边</li>
+<li><code>remove_isolated_nodes(edge_index, edge_attr=None, num_nodes=None)</code>，移除孤立节点，<strong>重新对边编号</strong>，返回(edge_index, edge_attr, node_mask)，其中node_mask是节点的布尔掩码</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Mac配置与软件记录]]></title>
+        <id>https://ixsluo.github.io/post/mac-pei-zhi-yu-ruan-jian-ji-lu/</id>
+        <link href="https://ixsluo.github.io/post/mac-pei-zhi-yu-ruan-jian-ji-lu/">
+        </link>
+        <updated>2021-07-14T01:59:08.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li><a href="#iterm2">iTerm2</a></li>
+<li><a href="#zsh--oh-my-zsh">zsh &amp; oh-my-zsh</a></li>
+<li><a href="#delta">delta</a></li>
+<li><a href="#dotfiles">dotfiles</a></li>
+<li><a href="#x11">X11</a></li>
+<li><a href="#fonts">Fonts</a></li>
+<li><a href="#alfred">Alfred</a></li>
+<li><a href="#github-page">Github Page</a></li>
+<li><a href="#proxy">Proxy</a></li>
+</ol>
+<h2 id="iterm2">iTerm2</h2>
+<ul>
+<li>shell integration</li>
+<li>ssh with tmux
+<ul>
+<li><code>ssh -Yt [target] tmux -2u -CC new -A -s [session]</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="zsh-oh-my-zsh">zsh &amp; oh-my-zsh</h2>
+<p>zsh is instlled by default in mac</p>
+<pre><code>chsh -s /bin/zsh
+sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+</code></pre>
+<h2 id="delta">delta</h2>
+<p><a href="https://github.com/dandavison/delta">A viewer for git and diff output</a></p>
+<p><code>brew install git-delta</code></p>
+<details>
+  <summary>.gitconfig</summary>
+  <pre><code>[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+<p>[interactive]<br>
+diffFilter = delta --color-only</p>
+<p>[delta]<br>
+features = side-by-side line-numbers decorations<br>
+whitespace-error-style = 22 reverse</p>
+<p>[delta &quot;decorations&quot;]<br>
+commit-decoration-style = bold yellow box ul<br>
+file-style = bold yellow ul<br>
+file-decoration-style = none<br>
+</code></pre></p>
+</details>
+<h2 id="dotfiles">dotfiles</h2>
+<p><a href="https://github.com/ixsluo/.dotfiles/blob/main/.README.md">My dotfiles</a></p>
+<h2 id="x11">X11</h2>
+<pre><code>brew install xquartz
+open /Applications/Utilities/XQuartz.app
+ssh -Y [target]
+</code></pre>
+<h2 id="fonts">Fonts</h2>
+<ul>
+<li><a href="https://github.com/tonsky/FiraCode">Fira Code</a>
+<ul>
+<li><code>brew install font-fira-code</code></li>
+</ul>
+</li>
+<li>Hack Nerd ------ Non-ASCII Font
+<ul>
+<li><code>brew install font-hack-nerd-font</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="alfred">Alfred</h2>
+<p><code>Preferences</code> -&gt; <code>Features</code> -&gt; <code>Terminal</code> -&gt; <code>Application</code> -&gt; <code>Custom</code></p>
+<details>
+  <summary>change default terminal to iTerm2</summary>
+  <pre><code>on alfred_script(q)
+	if application "iTerm2" is running or application "iTerm" is running then
+		run script "
+			on run {q}
+				tell application \":Applications:iTerm.app\"
+					activate
+					try
+						select first window
+						set onlywindow to false
+					on error
+						create window with default profile
+						select first window
+						set onlywindow to true
+					end try
+					tell current session of the first window
+						if onlywindow is false then
+							tell split vertically with default profile
+								write text q
+							end tell
+						end if
+					end tell
+				end tell
+			end run
+		" with parameters {q}
+	else
+		run script "
+			on run {q}
+				tell application \":Applications:iTerm.app\"
+					activate
+					try
+						select first window
+					on error
+						create window with default profile
+						select first window
+					end try
+					tell the first window
+						tell current session to write text q
+					end tell
+				end tell
+			end run
+		" with parameters {q}
+	end if
+end alfred_script
+  </code></pre>
+</details>
+<h2 id="github-page">Github Page</h2>
+<p><code>Ruby</code>(default) <code>RubyGems</code>(default) <code>nvm</code> <code>node</code></p>
+<ul>
+<li><a href="https://github.com/nvm-sh/nvm#installing-and-updating">nvm</a>
+<ul>
+<li><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash</code></li>
+</ul>
+</li>
+<li>node
+<ul>
+<li><code>nvm install --lts</code> long-term-support verson</li>
+</ul>
+</li>
+</ul>
+<pre><code>[sudo] gem install jekyll
+git clone [github page url]
+cd [github page dir]
+bundle init  # create Gemfile if there's no one
+echo 'gem &quot;minima&quot;' &gt;&gt; Gemfile  # load theme
+bundle install
+bundle exec jekyll serve --trace  # running jekyll on a local port
+rake new  # create a new post from a template
+</code></pre>
+<h2 id="proxy">Proxy</h2>
+<p>assume system proxy has been set</p>
+<pre><code>#proxy_addr=&quot;http://127.0.0.1:8118&quot;
+proxy_addr=&quot;socks5://127.0.0.1:1080&quot;
+alias proxy=&quot;export all_proxy=$proxy_addr&quot;
+alias unproxy=&quot;unset all_proxy&quot;
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Pytorch 笔记]]></title>
+        <id>https://ixsluo.github.io/post/pytorch-bi-ji/</id>
+        <link href="https://ixsluo.github.io/post/pytorch-bi-ji/">
+        </link>
+        <updated>2020-11-23T01:58:04.000Z</updated>
+        <content type="html"><![CDATA[<ul>
+<li>GPU设置</li>
+</ul>
+<pre><code class="language-python"># 确定GPU是否可用以及GPU数量
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+n_gpu = torch.cuda.device_count()
+
+net = NET()  # 实例化网络
+
+</code></pre>
+<ul>
+<li>尝试单个batch过拟合，确认网络在工作</li>
+</ul>
+<pre><code class="language-python">first_batch = next(iter(train_loader))
+for batch_idx, (data) in enumerate([first_batch] * 50):
+    # train
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Centos7 Nvidia Driver]]></title>
+        <id>https://ixsluo.github.io/post/centos7-nvidia-driver/</id>
+        <link href="https://ixsluo.github.io/post/centos7-nvidia-driver/">
+        </link>
+        <updated>2020-11-19T01:56:53.000Z</updated>
+        <summary type="html"><![CDATA[<p>Centos7离线安装Nvidia显卡驱动</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>Centos7离线安装Nvidia显卡驱动</p>
+<!-- more -->
+<ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E9%9C%80%E6%B1%82">环境需求</a></li>
+<li><a href="#nvidia%E9%A9%B1%E5%8A%A8450">Nvidia驱动(450)</a></li>
+<li><a href="#cuda110">CUDA(11.0)</a></li>
+<li><a href="#cudnn">cuDNN</a></li>
+</ul>
+<h2 id="环境需求">环境需求</h2>
+<ol>
+<li>依赖包</li>
+</ol>
+<pre><code class="language-bash">yum install gcc kernel-devel kernel-headers
+</code></pre>
+<ol start="2">
+<li>检查内核版本以及/boot目录大于300M</li>
+</ol>
+<pre><code class="language-bash">uname -r  # 3.10.*
+df -h
+</code></pre>
+<ol start="3">
+<li>查看显卡(Tesla K80)</li>
+</ol>
+<pre><code class="language-bash">lspci | grep NVIDIA
+</code></pre>
+<ol start="4">
+<li>禁用nouveau</li>
+</ol>
+<ul>
+<li>查看nouveau是否启用</li>
+</ul>
+<pre><code class="language-bash">lsmod | grep nouveau
+# 无输出说明已禁用
+</code></pre>
+<ul>
+<li>禁用nouveau</li>
+</ul>
+<pre><code class="language-bash">echo blacklist nouveau &gt;&gt; /etc/modprobe.d/blacklist-nouveau.conf
+echo option nouveau modeset=0 &gt;&gt; /etc/modprobe.d/blacklist-nouveau.conf
+dracut --force  # 重新生成kernel initramfs
+reboot
+</code></pre>
+<h2 id="nvidia驱动450">Nvidia驱动(450)</h2>
+<ul>
+<li><a href="https://www.nvidia.cn/Download/index.aspx?lang=cn">Nvidia驱动下载</a></li>
+</ul>
+<ol>
+<li>驱动安装</li>
+</ol>
+<pre><code class="language-bash">chmod +x ~/apps/NVIDIA-Linux-*.run
+./apps/NVIDIA-Linux-*.run --kernel-source-path=/usr/src/kernels/3.10.*** -k $(uname -r) --no-drm
+nvidia-smi  # 查看是否安装成功
+</code></pre>
+<ol start="2">
+<li><a href="https://www.cnblogs.com/2012blog/p/9431432.html">部分错误及解决方法参考</a></li>
+</ol>
+<ul>
+<li>X library字符模式警告可忽略</li>
+</ul>
+<h2 id="cuda110">CUDA(11.0)</h2>
+<ul>
+<li><a href="https://developer.nvidia.com/cuda-downloads">Nvidia下载地址</a></li>
+<li><a href="https://docs.nvidia.com/cuda/">官方文档</a></li>
+</ul>
+<ol>
+<li>安装</li>
+</ol>
+<pre><code class="language-bash">chmod +x ~/apps/cuda_11.*.run
+./apps/cuda_11.*.run --kernel-source-path=/usr/src/kernels/3.10.*** --no-drm
+</code></pre>
+<p>不必再次安装Driver，Sample、Demo、Doc可选则安装</p>
+<p>选择完毕后<code>install</code></p>
+<ol start="2">
+<li>PATH及链接</li>
+</ol>
+<pre><code class="language-bash">echo export PATH=/usr/local/cuda-11.0/bin:$PATH &gt;&gt; /etc/profile
+source /etc/profile
+echo /usr/local/cuda-11.0/lib64 &gt;&gt; /etc/ld.so.conf
+ldconfig
+</code></pre>
+<ol start="3">
+<li>卸载</li>
+</ol>
+<pre><code class="language-bash">./usr/local/cuda-11.0/bin/cuda-uninstaller
+</code></pre>
+<h2 id="cudnn">cuDNN</h2>
+<ul>
+<li><a href="https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html">官方文档</a></li>
+</ul>
+<pre><code class="language-bash">tar -xzvf cudnn-x.x-linux-x64-v8.x.x.x.tgz
+cp cuda/include/cudnn*.h /usr/local/cuda/include
+cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
+chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[PBS集群安装]]></title>
+        <id>https://ixsluo.github.io/post/cluster-network/</id>
+        <link href="https://ixsluo.github.io/post/cluster-network/">
+        </link>
+        <updated>2020-11-16T01:52:20.000Z</updated>
+        <summary type="html"><![CDATA[<p>记录处理集群网络连接</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>记录处理集群网络连接</p>
+<!-- more -->
+<ul>
+<li><a href="#1-%E4%B8%BB%E6%9C%BA%E5%AE%A2%E6%88%B7%E6%9C%BA%E7%BD%91%E6%AE%B5%E8%AE%BE%E7%BD%AE">1. 主机客户机网段设置</a>
+<ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%8D%A1">查看网卡</a></li>
+<li><a href="#%E7%99%BB%E5%BD%95%E8%8A%82%E7%82%B9%E8%AE%BE%E7%BD%AE">登录节点设置</a>
+<ul>
+<li><a href="#%E4%B8%BB%E6%9C%BA%E5%90%8D%E4%BF%AE%E6%94%B9"><strong>主机名修改</strong></a></li>
+<li><a href="#%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C">外部网络</a></li>
+<li><a href="#%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C">内部网络</a></li>
+<li><a href="#ip%E6%98%A0%E5%B0%84">ip映射</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E8%AE%BE%E7%BD%AE">计算节点设置</a>
+<ul>
+<li><a href="#%E4%B8%BB%E6%9C%BA%E5%90%8D%E4%BF%AE%E6%94%B9-1"><strong>主机名修改</strong></a></li>
+<li><a href="#%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C-1">内部网络</a></li>
+<li><a href="#ip%E6%98%A0%E5%B0%84-1">ip映射</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-%E7%A8%8B%E5%BA%8F%E5%8C%85%E5%AE%89%E8%A3%85">2. 程序包安装</a></li>
+<li><a href="#3-nis%E5%8F%8Anfs%E6%9C%8D%E5%8A%A1">3. NIS及NFS服务</a>
+<ul>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9">计算节点</a></li>
+<li><a href="#nfs%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD">NFS目录挂载</a></li>
+</ul>
+</li>
+<li><a href="#4-pbs%E5%AE%89%E8%A3%85">4. PBS安装</a>
+<ul>
+<li><a href="#torque6111">Torque(6.1.1.1)</a>
+<ul>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85">主节点安装</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85">计算节点安装</a></li>
+<li><a href="#torque%E5%8D%B8%E8%BD%BD">Torque卸载</a></li>
+</ul>
+</li>
+<li><a href="#maui33">MAUI(3.3)</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-主机客户机网段设置">1. 主机客户机网段设置</h2>
+<ul>
+<li>服务<code>network</code></li>
+</ul>
+<h3 id="查看网卡">查看网卡</h3>
+<pre><code class="language-bash">ip addr
+</code></pre>
+<p>假设内部网卡为<code>eno1</code>，外部网卡为<code>eno2</code></p>
+<h3 id="登录节点设置">登录节点设置</h3>
+<h4 id="主机名修改"><strong>主机名修改</strong></h4>
+<p>修改登录节点计算机名为<em>main</em></p>
+<pre><code class="language-bash">hostnamectl set-hostname main
+</code></pre>
+<h4 id="外部网络">外部网络</h4>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno2
+</code></pre>
+<p>修改以下配置</p>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.8.14  # 外部网络的路由地址
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.8.254  # 网关
+</code></pre>
+<h4 id="内部网络">内部网络</h4>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno1
+</code></pre>
+<p>修改以下配置</p>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.2.1  # 内部地址，2网段
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.2.254  # 网关
+</code></pre>
+<h4 id="ip映射">ip映射</h4>
+<pre><code class="language-bash">cat &gt;&gt; /etc/hosts &lt;&lt; EOF
+# 内网ip  |  主机名
+192.168.2.1   main
+192.168.2.101 node01
+192.168.2.102 node02
+EOF
+</code></pre>
+<h3 id="计算节点设置">计算节点设置</h3>
+<h4 id="主机名修改-2"><strong>主机名修改</strong></h4>
+<p>修改计算节点计算机名为<em>node**</em>，以node01为例</p>
+<pre><code class="language-bash">hostnamectl set-hostname node01
+</code></pre>
+<h4 id="内部网络-2">内部网络</h4>
+<p>计算节点无外部网络，故只需修改内网网卡配置</p>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno1
+</code></pre>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.2.101  # 内部地址，2网段，101号
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.2.1  # 登录节点作为网关
+</code></pre>
+<h4 id="ip映射-2">ip映射</h4>
+<p><strong>至少</strong>要添加主节点ip</p>
+<pre><code class="language-bash">cat &gt;&gt; /etc/hosts &lt;&lt; EOF
+# 内网ip  |  主机名
+192.168.2.1   main
+EOF
+</code></pre>
+<h2 id="2-程序包安装">2. 程序包安装</h2>
+<p>集群无外网，且计算节点为最小化安装</p>
+<p>从另一台最小化安装的机器上下载安装包以及依赖包，如</p>
+<pre><code class="language-bash">yum -y install ypserv ypbind yp-tool --downloadonly --downloaddir=./NIS
+# 下载NIS服务及当前缺少的依赖包到NIS文件夹
+scp -rP &lt;port&gt; NIS &lt;remote&gt;:&lt;dir&gt;
+# 传输到集群机器
+</code></pre>
+<p>从本地安装rpm包</p>
+<pre><code class="language-bash">yum localinstall ***.rpm
+</code></pre>
+<h2 id="3-nis及nfs服务">3. NIS及NFS服务</h2>
+<h3 id="主节点">主节点</h3>
+<pre><code>软件包(yum install)：
+ypserv ypbind yp-tool  # NIS
+nfs-utils rpcbind  # NFS
+</code></pre>
+<ol>
+<li>设置NIS域名</li>
+</ol>
+<pre><code class="language-bash">nisdomainname JohnGPU
+</code></pre>
+<ol start="2">
+<li>设置NIS网域名称，开机自动设置NIS域名</li>
+</ol>
+<pre><code class="language-bash">echo &quot;NISDOMAIN=JohnGPU&quot; &gt;&gt; /etc/sysconfig/network
+echo &quot;/bin/nisdomainname JohnGPU&quot; &gt;&gt; /etc/rc.d/rc.local
+</code></pre>
+<ol start="3">
+<li>启动服务</li>
+</ol>
+<pre><code class="language-bash">systemctl restart rpcbind
+systemctl restart ypserv
+</code></pre>
+<ol start="4">
+<li>建立数据库，并再次重启</li>
+</ol>
+<pre><code class="language-bash">/usr/lib64/yp/ypinit -m
+&gt; Ctrl + D
+&gt; y
+systemctl restart ypserv
+</code></pre>
+<ol start="5">
+<li><strong>更新数据库</strong></li>
+</ol>
+<pre><code class="language-bash"># 当用户信息更新后(新建、修改等)
+make -C /var/yp
+</code></pre>
+<h3 id="计算节点">计算节点</h3>
+<pre><code class="language-bash"># 软件包
+yum install ypbind yp-tool
+</code></pre>
+<ol>
+<li>加入同一NIS域，以及开机自动加入</li>
+</ol>
+<pre><code class="language-bash">echo &quot;NISDOMAIN=JohnGPU&quot; &gt;&gt; /etc/sysconfig/network
+echo &quot;/bin/nisdomainname JohnGPU&quot; &gt;&gt; /etc/rc.d/rc.local
+</code></pre>
+<ol start="2">
+<li>修改用户密码验证顺序，由<code>/etc/nsswitch.conf</code>控制，搜索顺序由左至右</li>
+</ol>
+<pre><code class="language-bash">sed -i 's/^passwd:.*/passwd: files nis/g' /etc/nsswitch.conf
+sed -i 's/^shadow:.*/shadow: files nis/g' /etc/nsswitch.conf
+sed -i 's/^group:.*/group: files nis/g' /etc/nsswitch.conf
+sed -i 's/^hosts:.*/hosts: files dns nis/g' /etc/nsswitch.conf
+</code></pre>
+<ol start="3">
+<li>修改计算节点配置，增加主节点地址</li>
+</ol>
+<pre><code class="language-bash">echo &quot;domain JohnGPU server &lt;服务端内部地址&gt;&quot; &gt;&gt; /etc/yp.conf
+</code></pre>
+<ol start="4">
+<li>修改系统认证文件</li>
+</ol>
+<pre><code class="language-bash">sed -i 's/USENIS=no/USENIS=yes/g' /etc/sysconfig/autoconfig
+
+sed -i 's/^password[[:space:]]*sufficient.*/\
+password    sufficient    pam_unix.so sha512 shadow nis nullok try_first_pass use_authtok/g' \
+/etc/pam.d/system-auth
+</code></pre>
+<ol start="5">
+<li>重启服务，若配置正确仍启动失败，则可能为防火墙与selinux权限问题</li>
+</ol>
+<pre><code class="language-bash">systemctl restart rpcbind
+systemctl restart ypbind
+</code></pre>
+<ol start="6">
+<li>计算节点执行<code>yptest</code>命令检查是否存在用户资料信息</li>
+</ol>
+<h3 id="nfs目录挂载">NFS目录挂载</h3>
+<ol>
+<li>主节点</li>
+</ol>
+<ul>
+<li>编辑nfs挂载配置</li>
+</ul>
+<pre><code class="language-bash">cat &gt;&gt; /etc/exports &lt;&lt; EOF
+/home 192.168.2.0/255.255.255.0(insecure,rw,sync,no_root_squash)
+/opt  192.168.2.0/255.255.255.0(insecure,rw,sync,no_root_squash)
+EOF
+# 共享家目录及共享软件目录，共享网段为192.168.2.0，权限为rw(ro仅读)
+# sync开启同步
+</code></pre>
+<ul>
+<li>启动服务</li>
+</ul>
+<pre><code class="language-bash">systemctl enable rpcbind.service
+systemctl enable nfs-server.service
+systemctl start rpcbind.service
+systemctl start nfs-server.service
+</code></pre>
+<pre><code class="language-bash">exportfs -r  # 使配置生效
+exportfs  # 查看共享目录
+</code></pre>
+<ul>
+<li><code>showmount -e</code>检查nfs服务，若出现’clnt_create: RPC: Program not registered‘错误，依次关闭nfs和rpcbind，再依次启动rpcbind和nfs</li>
+</ul>
+<pre><code class="language-bash">systemctl stop nfs
+systemctl stop rpcbind
+systemctl start rpcbind
+systemctl start nfs
+</code></pre>
+<ol start="2">
+<li>计算节点</li>
+</ol>
+<ul>
+<li><code>rpcbind</code>服务确认启动</li>
+<li><code>nfs</code>服务确认安装，但不需启动</li>
+</ul>
+<pre><code class="language-bash">showmount -e main  # 查看可挂载的主机共享目录
+mount -t nfs main:/home /home  # 挂载家目录
+mount -t nfs main:/opt  /opt  # 挂载家目录
+</code></pre>
+<ul>
+<li>若出现<code>Stale File Handle</code>错误，先取消挂载，再挂载</li>
+</ul>
+<pre><code class="language-bash">umount -f /home
+</code></pre>
+<ul>
+<li>
+<p>自动挂载-autofs</p>
+<p>未实现，转而使用挂载脚本</p>
+</li>
+</ul>
+<pre><code class="language-bash">for node in 01 02 ; do
+    ssh node$node &gt; /dev/null 2&gt;&amp;1 &lt;&lt; EOF
+    mount -t nfs main:/home /home
+    mount -t nfs main:/opt /opt
+    exit
+EOF
+done
+</code></pre>
+<pre><code class="language-bash"># 软件包
+yum install autofs hesiod
+# 修改配置
+sed -i &quot;s/^timeout = .*$/timeout = 0/g&quot; /etc/autofs.conf
+echo /home  /etc/auto.nfs &gt;&gt; /etc/auto.master
+echo /opt  /etc/auto.nfs &gt;&gt; /etc/auto.master
+echo /home -rw -insecure -sync -no_root_squash main:/home &gt;&gt; /etc/auto.nfs
+echo /opt -rw -insecure -sync -no_root_squash main:/opt &gt;&gt; /etc/auto.nfs
+</code></pre>
+<pre><code class="language-bash">echo &quot;main:/home /home nfs defaults 0 0&quot; &gt;&gt; /etc/fstab
+echo &quot;main:/opt  /opt  nfs defaults 0 0&quot; &gt;&gt; /etc/fstab
+mount -a
+</code></pre>
+<h2 id="4-pbs安装">4. PBS安装</h2>
+<pre><code class="language-bash"># 软件包
+yum install \
+libxml2-devel openssl-devel \
+gcc gcc-c++ \
+boost-devel libtool
+</code></pre>
+<h3 id="torque6111">Torque(6.1.1.1)</h3>
+<pre><code class="language-bash"># 下载
+wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.0.tar.gz
+tar -zxvf torque-*
+cd torque-*
+</code></pre>
+<h4 id="主节点安装">主节点安装</h4>
+<ol>
+<li>编译安装</li>
+</ol>
+<pre><code class="language-bash">./configure
+# --prefix=[/usr/local]  安装目录
+# --with-server-home=[/var/spool/torque]  默认配置文件目录
+make
+make packages
+make install
+echo main &gt; /var/spool/torque/server_name  # 写入主节点主机名
+</code></pre>
+<ol start="2">
+<li>建立库文件</li>
+</ol>
+<pre><code class="language-bash">echo &quot;/usr/local/lib&quot; &gt; /etc/ld.so.conf.d/torque.conf  # 安装库路径
+ldconfig
+# libtool --finish /usr/local/torque/lib
+</code></pre>
+<ol start="3">
+<li>启动服务<code>trqauthd</code></li>
+</ol>
+<pre><code class="language-bash">cp contrib/init.d/trqauthd.service /usr/lib/systemd/system/
+systemctl enable trqauthd.service
+systemctl start trqauthd.service
+</code></pre>
+<ol start="4">
+<li>初始化设置</li>
+</ol>
+<pre><code class="language-bash">./torque.setup root
+qterm -tquick
+</code></pre>
+<ol start="5">
+<li>设置计算节点属性</li>
+</ol>
+<pre><code class="language-bash"># cp ~/nodes /var/spool/torque/server_priv/
+cat &gt; $TORQUE_HOME/server_priv/nodes &lt;&lt; EOF
+# 节点名  |  cpu核数  |  属性等
+node01 np=28
+node02 np=28
+# ...
+EOF
+</code></pre>
+<ol start="6">
+<li>安装到自定义目录时，检查环境变量，若PATH中缺少相应路径，则手动添加</li>
+</ol>
+<pre><code class="language-bash">cat &gt;&gt; /etc/profile &lt;&lt; EOF
+TORQUE=/usr/local/torque  # 安装目录
+TORQUE_HOME=/var/spool/torque  # 配置文件目录
+export PATH=$TORQUE/bin:$TORQUE/sbin:$PATH
+EOF
+source /etc/profile
+</code></pre>
+<ol start="7">
+<li>启动服务<code>pbs_server</code>、<code>pbs_sched</code></li>
+</ol>
+<pre><code class="language-bash">cp contrib/systemd/pbs_server.service /usr/lib/systemd/system/
+systemctl enable pbs_server.service
+systemctl start pbs_server.service
+
+cp contrib/systemd/ pbs_sched.service /usr/lib/systemd/system/
+systemctl enable pbs_sched.service
+systemctl start pbs_sched.service
+</code></pre>
+<ol start="8">
+<li>复制计算节点安装包至各计算节点</li>
+</ol>
+<pre><code class="language-bash">for node in 01 02 ; do
+  scp contrib/init.d/{pbs_mom,trqauthd} node$node:/etc/init.d/
+  scp torque-package-{mom,clients}-linux-x86_64.sh node$node:/root/
+  scp /etc/ld.so.conf.d/torque/conf node$node:/etc/ld.so.conf.d/
+done
+</code></pre>
+<h4 id="计算节点安装">计算节点安装</h4>
+<ol>
+<li>安装由主节点复制过来的安装包</li>
+</ol>
+<pre><code class="language-bash">./torque-package-clients-linux-x86_64.sh --install
+./torque-package-mom-linux-x86_64.sh --install
+</code></pre>
+<ol start="2">
+<li>链接库</li>
+</ol>
+<pre><code class="language-bash">/sbin/ldconfig
+</code></pre>
+<ol start="3">
+<li>设置主节点名</li>
+</ol>
+<pre><code class="language-bash"># 配置文件目录与主节点相同
+# main为主节点主机名
+echo -e &quot;\$pbsserver main\n\$logevent 225&quot; &gt; /var/spool/torque/mom_priv/config
+echo main &gt; /var/spool/torque/server_name
+</code></pre>
+<ol start="4">
+<li>启动服务<code>pbs_mom</code></li>
+</ol>
+<pre><code class="language-bash">systemctl enable pbs_mom
+systemctl start pbs_mom
+</code></pre>
+<ol start="5">
+<li>检查是否成功</li>
+</ol>
+<pre><code class="language-bash">pbsnodes -a  # 检查节点状态是否为free
+
+# 非root用户下，运行测试
+qsub -I
+echo &quot;sleep 10&quot; | qsub
+qstat
+</code></pre>
+<h4 id="torque卸载">Torque卸载</h4>
+<ol>
+<li>停止服务</li>
+</ol>
+<pre><code class="language-bash"># 计算节点
+systemctl stop pbs_mom.service
+# 主节点
+systemctl stop pbs_sched.service
+systemctl stop pbs_server.service
+systemctl stop trqauthd.service
+# 计算节点
+systemctl disable pbs_mom.service
+# 主节点
+systemctl disable pbs_sched.service
+systemctl disable pbs_server.service
+systemctl disable trqauthd.service
+</code></pre>
+<ol start="2">
+<li>删除添加的文件</li>
+</ol>
+<pre><code class="language-bash"># 计算节点
+rm -f /usr/lib/systemd/system/pbs_mom.service
+# 主节点
+rm -f /usr/lib/systemd/system/pbs_sched.service
+rm -f /usr/lib/systemd/system/pbs_server.service
+rm -f /usr/lib/systemd/system/trqauthd.service
+# 计算节点
+rm -f /etc/ld.so.conf.d/torque.conf
+# 主节点
+rm -f /etc/ld.so.conf.d/torque.conf
+make uninstall
+</code></pre>
+<ol start="3">
+<li>计算节点卸载</li>
+</ol>
+<pre><code class="language-bash">./torque-package-mom-linux-x86_64.sh -l
+./torque-package-clients-linux-x86_64.sh -l
+</code></pre>
+<h3 id="maui33">MAUI(3.3)</h3>
+<ol>
+<li>主节点编译安装</li>
+</ol>
+<pre><code class="language-bash">tar -zxvf maui-*.tar.gz
+cd maui-*
+./configure
+# --with-pbs=[/usr/local]  查找pbs-config或libpbs.a的路径
+# --prefix=[/usr/local/maui]
+# --with-spooldir=[/usr/local/maui]
+make
+make install
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[MongoDB使用Docker安装与备份恢复]]></title>
+        <id>https://ixsluo.github.io/post/mongodb-managing/</id>
+        <link href="https://ixsluo.github.io/post/mongodb-managing/">
+        </link>
+        <updated>2020-11-14T01:50:42.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<h2 id="容器中安装mongodb">容器中安装MongoDB</h2>
+<p>拉取最新版本镜像</p>
+<pre><code class="language-sh">docker pull mongo:latest
+</code></pre>
+<p>运行镜像mongo，容器名mongo，启用mongo密码</p>
+<pre><code class="language-sh">docker run -itd -p 27017:27017 --name mongo mongo --auth
+</code></pre>
+<p>进入MongoDB，并使用admin数据库</p>
+<pre><code class="language-sh">docker exec -it mongo mongo admin
+</code></pre>
+<p>设置管理账户admin</p>
+<pre><code class="language-txt">&gt; db.createUser({
+... user: &quot;admin&quot;,
+... pwd: &quot;******&quot;,
+... roles: [{
+...     role: &quot;userAdminAnyDatabase&quot;,
+...     db: &quot;admin&quot;}],
+... })
+
+验证连接
+&gt; db.auth('admin', '******')
+</code></pre>
+<h2 id="备份与恢复容器内的mongodb">备份与恢复容器内的MongoDB</h2>
+<p>容器与宿主机文件拷贝，容器内路径需加&lt;容器名:&gt;</p>
+<pre><code class="language-bash">docker cp &lt;hostdir&gt; &lt;container&gt;:&lt;dir&gt;
+</code></pre>
+<p>容器内进行备份与恢复</p>
+<pre><code class="language-bash">docker exec -it mongo /bin/bash  # 进入容器
+mongodump -d &lt;db&gt; -o &lt;dir&gt;  # 将db数据库备份至dir目录
+
+mongorestore -d &lt;db&gt; &lt;path&gt;  # 恢复数据库，-d重命名。&lt;path&gt; &lt;- &lt;dir&gt;/db
+mongorestore --dir &lt;dir&gt;  # 恢复整个备份目录
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Gitea安装与git commit]]></title>
+        <id>https://ixsluo.github.io/post/gitea-installation-guildline/</id>
+        <link href="https://ixsluo.github.io/post/gitea-installation-guildline/">
+        </link>
+        <updated>2020-11-10T01:44:51.000Z</updated>
+        <content type="html"><![CDATA[<!--more-->
+<figure data-type="image" tabindex="1"><img src="https://img.shields.io/badge/Git-Gitea-brightgreen?style=plastic&amp;logo=github" alt="shield" loading="lazy"></figure>
+<ul>
+<li><a href="#1-install-with-docker-compose">1. Install with Docker-Compose</a></li>
+<li><a href="#2-git%E4%BD%BF%E7%94%A8%E7%AE%80%E4%BB%8B">2. Git使用简介</a>
+<ul>
+<li><a href="#21-git%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95">2.1. Git工作目录</a></li>
+<li><a href="#22-git%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86">2.2. <strong>Git分支管理</strong></a>
+<ul>
+<li><a href="#221-%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6">2.2.1. 分支合并</a></li>
+</ul>
+</li>
+<li><a href="#23-git-commit-%E8%A7%84%E8%8C%83">2.3. <strong>Git commit 规范</strong></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-install-with-docker-compose">1. Install with Docker-Compose</h2>
+<p>Rely on <code>docker</code>, <code>docker-compose</code></p>
+<p>Add user &quot;git&quot; to group &quot;docker&quot; to run docker-compose in user &quot;git&quot;</p>
+<pre><code class="language-sh">gpassed -a git docker
+</code></pre>
+<p>Docker-compose</p>
+<pre><code class="language-sh">su git
+mkdir gitea ; cd gitea
+cat &gt; docker-compose.yml &lt;&lt; EOF
+version: &quot;3&quot;
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:1
+    container_name: gitea
+    environment:
+      - USER_UID=1002  # UID of git
+      - USER_GID=1002  # GID of git
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - /home/git/data:/data  # mount, HOST:docker
+      - /etc/timezone:/etc/timezone:ro  # ro: read only
+      - /etc/localtime:/etc/localtime:ro
+    ports:  # port mapping, HOST:docker
+      - &quot;10080:3000&quot;  # web for gitea
+      - &quot;10022:22&quot;  # ssh for gitea
+EOF
+docker-compose up -d  # run in background
+</code></pre>
+<p>Visit <code>ip:10080/install</code></p>
+<p>(You may make a port mapping on router &lt;outer ip&gt;, 10022-&gt;10022, 10080-&gt;10080)</p>
+<ul>
+<li>simplily choose SQLite3 for database</li>
+<li>fill SSH domain and port with <strong>External Domain and Port</strong>
+<ul>
+<li><code>&lt;outer ip&gt;:10022</code></li>
+</ul>
+</li>
+<li>fill HTTP port with <strong>Internal Port</strong>
+<ul>
+<li>default <code>3000</code></li>
+</ul>
+</li>
+<li>fill basic URL with <strong>External URL</strong>
+<ul>
+<li><code>http://&lt;outer ip&gt;:10080</code></li>
+</ul>
+</li>
+</ul>
+<p>Done!</p>
+<h2 id="2-git使用简介">2. Git使用简介</h2>
+<p>参考<a href="https://www.runoob.com/git/git-tutorial.html">菜鸟教程</a></p>
+<pre><code class="language-bash"># 客户端配置默认用户及邮箱、编辑器，global为全局配置
+git config --global user.name &quot;&lt;name&gt;&quot;
+git config --global user.email &quot;&lt;email&gt;&quot;
+git config --global core.editor vim
+</code></pre>
+<h3 id="21-git工作目录">2.1. Git工作目录</h3>
+<p>在项目文件夹内执行<code>git init</code>即将该文件夹初始化为一个git仓库。</p>
+<p>用户在目录中所看到的即是工作区</p>
+<pre><code>      add                    commit
+工  -----------------&gt;  暂  -----------&gt;  仓
+作  checkout -- &lt;file&gt;  存   reset HEAD   库
+区  &lt;-----------------  区  &lt;-----------  区
+^                       ^                 |
+|                       |
+|-----------------------------------------|
+          checkout HEAD &lt;file&gt;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>git status</code></td>
+<td style="text-align:left">查看当前工作区状态</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git add &lt;files&gt;</code></td>
+<td style="text-align:left">用工作区内的文件更新暂存区</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git commit</code></td>
+<td style="text-align:left">将暂存区的内容更新至仓库区，<strong>产生一个新的快照</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git reset HEAD</code></td>
+<td style="text-align:left">将暂存区重写为仓库区保存的文件</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git checkout -- &lt;file&gt;</code></td>
+<td style="text-align:left">用暂存区文件覆盖工作区文件</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git checkout HEAD &lt;file&gt;</code></td>
+<td style="text-align:left">用仓库区文件替换暂存区与工作区</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-git分支管理">2.2. <strong>Git分支管理</strong></h3>
+<p>分支举例</p>
+<pre><code>分支        分支名             快照树
+主分支      master    M1&lt;----------------------M2
+预发布分支  release     \-R1&lt;----------------R2^
+开发分支    dev            \-D1&lt;---D2&lt;-----D3^
+功能分支    feat               \-F1&lt;-----F2^
+</code></pre>
+<p>快照举例</p>
+<pre><code>* &lt;hash*&gt; (HEAD -&gt; branch2, branch3) &lt;commit message&gt;
+* &lt;hash*&gt; &lt;commit message&gt;
+* &lt;hash*&gt; (branch1) &lt;commit message&gt;
+* &lt;hash*&gt; (master) &lt;commit message&gt;
+</code></pre>
+<p><em>HEAD</em>指针表示当前所在分支及位置</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>git init</code></td>
+<td style="text-align:left">默认创建主分支<em>master</em></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git branch release</code></td>
+<td style="text-align:left">创建<em>release</em>分支</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git checkout release</code></td>
+<td style="text-align:left">切换<em>HEAD</em>指针到<em>release</em>分支</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git checkout -b dev</code></td>
+<td style="text-align:left">创建并切换到<em>dev</em>分支</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>git branch -d dev</code></td>
+<td style="text-align:left">删除<em>dev</em>分支</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="221-分支合并">2.2.1. 分支合并</h4>
+<p><code>git merge &lt;待合并分支&gt;</code>将待合并分支合并到当前指针所在分支。</p>
+<ul>
+<li>快进合并，无冲突</li>
+</ul>
+<pre><code class="language-txt">  HEAD                            HEAD
+branch1                         branch1
+   |               ==&gt;             |
+   B0&lt;--B1&lt;--B2          B0&lt;--B1&lt;--B2
+             |                     |
+           branch2              branch
+</code></pre>
+<p>branch2为从branch1拉取的分支，进行两次提交到B2，<strong>branch1没有任何提交</strong>。</p>
+<p><code>git checkout branch1; git merge branch2</code>，不会产生任何冲突，直接移动<em>HEAD</em>指针和branch1到B2，快进合并，合并成功。</p>
+<ul>
+<li>非快进合并</li>
+</ul>
+<pre><code class="language-txt">  HEAD                             HEAD
+branch1                          branch1
+   |                                |
+   B0&lt;----B1   ==&gt;   B0&lt;-----B1&lt;----B2
+    \-C1&lt;-C2           \-C1&lt;-C2&lt;---/
+          |                  |
+       branch2            branch2
+</code></pre>
+<p>当前希望将C2合并至B1，<code>git checkout branch1; git merge branch2</code></p>
+<p>合并原理：追踪两个合并节点(B1, C2)最近的共同出发点(B0)，对比三方文件</p>
+<ol>
+<li>在B0、B1中相同，在C2中不同，说明C2是修改后需要更新的，非快进合并，合并成功，产生新节点B2</li>
+<li>存在在B0、B1、C2中都不同的文件，git不知道如何更新文件，<strong>产生冲突</strong>，合并失败，需要解决冲突后再合并</li>
+</ol>
+<p>冲突解决：<code>git status</code>查看待解决冲突的文件名，git自动将冲突内容按下述方式标出</p>
+<p>冲突片段举例</p>
+<pre><code class="language-txt">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+HEAD中的当前内容
+=======
+待合并的冲突内容
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch2
+</code></pre>
+<p>修改冲突片段为需要保留的内容，<code>add</code>、<code>commit</code>后产生新的快照，再尝试<code>merge</code>合并。</p>
+<h3 id="23-git-commit-规范">2.3. <strong>Git commit 规范</strong></h3>
+<p><code>git commit [-m &lt;message&gt;]</code>进行一次提交，产生一个新的快照。每次提交必须写入提交说明，可以直接使用<code>-m</code>参数写入一行的短说明，也可以不使用<code>-m</code>，将打开一个新窗口用于编辑提交说明。</p>
+<p><strong>建议使用：</strong><code>git commit -s</code>自动增加签名。</p>
+<p><strong>建议写法：</strong></p>
+<pre><code class="language-txt">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+***空一行***
+&lt;body&gt;
+***空一行***
+&lt;footer&gt;
+</code></pre>
+<ol>
+<li><strong>Header</strong></li>
+</ol>
+<p><em>type</em>：用于说明commit的类别，只允许以下类别</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">feat</td>
+<td style="text-align:left">新功能 feature</td>
+</tr>
+<tr>
+<td style="text-align:left">fix</td>
+<td style="text-align:left">修复bug</td>
+</tr>
+<tr>
+<td style="text-align:left">docs</td>
+<td style="text-align:left">修改文档 documentation</td>
+</tr>
+<tr>
+<td style="text-align:left">style</td>
+<td style="text-align:left">不影响代码含义的改动，如代码格式等</td>
+</tr>
+<tr>
+<td style="text-align:left">refactor</td>
+<td style="text-align:left">代码重构，既不新增功能，也不修复bug</td>
+</tr>
+<tr>
+<td style="text-align:left">test</td>
+<td style="text-align:left">新增缺失的测试或修正已有的测试</td>
+</tr>
+<tr>
+<td style="text-align:left">build*</td>
+<td style="text-align:left">影响链接或外部依赖的改动</td>
+</tr>
+<tr>
+<td style="text-align:left">chore</td>
+<td style="text-align:left">不改变源码或测试文件的构建过程或辅助工具的改动</td>
+</tr>
+<tr>
+<td style="text-align:left">revert*</td>
+<td style="text-align:left">快照回滚</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p><em>scope</em>：选填，用于说明commit的影响范围，依项目而定，可以是功能、模块、文件名等</p>
+<p><em>subject</em>：短描述</p>
+<ul>
+<li>以动词开头，使用第一人称现在时</li>
+<li>第一个字母小写</li>
+<li>结尾不加句号（.）</li>
+</ul>
+<ol start="2">
+<li><strong>Body</strong></li>
+</ol>
+<p>对本次提交的详细描述，可以是多行</p>
+<ol start="3">
+<li><strong>footer</strong>：只用于</li>
+</ol>
+<ul>
+<li>不兼容改动，以BREAKING CHANGE开头</li>
+</ul>
+<pre><code class="language-text">	BREAKING CHANGE: &lt;describtion&gt;
+		&lt;describtion&gt;
+		Before:
+			...
+		After:
+			...
+</code></pre>
+<ul>
+<li>关闭issue</li>
+</ul>
+<pre><code class="language-text">	Closes #123
+</code></pre>
+<ol start="4">
+<li><strong>Revert</strong></li>
+</ol>
+<p>特殊提交，<em>Header</em>应写为<code>revert: &lt;被撤销提交的Header&gt;</code>%</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Centos7 Installation Guildline]]></title>
+        <id>https://ixsluo.github.io/post/centos7-installation-guildline/</id>
+        <link href="https://ixsluo.github.io/post/centos7-installation-guildline/">
+        </link>
+        <updated>2020-11-06T01:40:32.000Z</updated>
+        <summary type="html"><![CDATA[<p><img src="https://img.shields.io/badge/centos-installation-blue?logo=centos&amp;logoColor=orange&amp;labelColor=" alt="centos" loading="lazy"><br>
+Centos7系统安装指引</p>
+]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://img.shields.io/badge/centos-installation-blue?logo=centos&amp;logoColor=orange&amp;labelColor=" alt="centos" loading="lazy"><br>
+Centos7系统安装指引</p>
+<!-- more -->
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4">基本命令</a></li>
+<li><a href="#%E4%B8%BB%E6%9C%BA%E5%90%8D">主机名</a></li>
+<li><a href="#%E5%AE%89%E5%85%A8%E4%B8%8E%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95">安全与远程登录</a>
+<ul>
+<li><a href="#selinux">SELinux</a></li>
+<li><a href="#firewall">firewall</a></li>
+<li><a href="#%E7%A6%81%E6%AD%A2%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7su">禁止普通用户su</a></li>
+<li><a href="#ssh">SSH</a></li>
+</ul>
+</li>
+<li><a href="#chrony-%E5%90%8C%E6%AD%A5%E6%97%B6%E9%97%B4">chrony 同步时间</a></li>
+<li><a href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85">软件安装</a>
+<ul>
+<li><a href="#bash-completion">bash-completion</a></li>
+<li><a href="#git">Git</a></li>
+<li><a href="#commitizen">Commitizen</a></li>
+<li><a href="#docker">Docker</a></li>
+<li><a href="#mysql">MySQL</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="基本命令">基本命令</h2>
+<p>管理服务</p>
+<p><code>systemctl [status|start|stop|restart|enable|disable] &lt;servicename&gt;</code></p>
+<p>网络</p>
+<p><code>ip [addr]</code></p>
+<p>终端提示音关闭</p>
+<p><code>setterm -blength n</code></p>
+<p>yum查找包及包含命令的包</p>
+<p><code>yum search &lt;package&gt;</code></p>
+<p><code>yum provides &lt;command&gt;</code></p>
+<h2 id="主机名">主机名</h2>
+<pre><code class="language-bash">hostnamectl -h
+hostnamectl set-hostname &lt;hostname&gt;
+</code></pre>
+<h2 id="安全与远程登录">安全与远程登录</h2>
+<h3 id="selinux">SELinux</h3>
+<p><code>sestatus</code>查看SELinux状态</p>
+<ul>
+<li><em>enforcing</em>    强制模式，运行中，限制domian/type</li>
+<li><em>permissive</em>   宽容模式，运行中，不限制但是警告</li>
+<li><em>disabled</em>     关闭，没有运行</li>
+</ul>
+<p><code>getenforce</code> 查看当前模式</p>
+<p><code>setenforce [0|1]</code> 运行模式切换，0-&gt;宽容模式，1-&gt;强制模式</p>
+<p>关闭SELinux需修改 <em>/etc/selinux/config</em> -&gt; <code>SELINUX=disabled</code> 并重启系统。</p>
+<p>SELinux端口管理</p>
+<pre><code class="language-sh">semanage port -l  # 显示所有端口
+semanage port [-a|-d] -t &lt;type, [ssh_port_t]&gt; -p tcp|udp &lt;port number&gt;  # 为指定策略增加或删除端口
+</code></pre>
+<p><code>yum install [setools-console-3.3.8-4.el7.x86_64]</code> 安装<code>seinfo</code>、<code>sesearch</code></p>
+<h3 id="firewall">firewall</h3>
+<p>服务，<code>firewalld</code>，管理命令，<code>firewall-cmd</code></p>
+<pre><code class="language-bash">firewall-cmd --get-active-zones  # 获取当前活动区域
+firewall-cmd --get-service  # 获取所有支持的服务
+firewall-cmd --reload  # 重新加载防火墙
+</code></pre>
+<p>部分参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">--permanent</td>
+<td style="text-align:left">永久加入规则，不影响当前运行状态</td>
+</tr>
+<tr>
+<td style="text-align:left">--zone=&lt;zone&gt;</td>
+<td style="text-align:left">对选择的区域进行操作</td>
+</tr>
+<tr>
+<td style="text-align:left">--list-services</td>
+<td style="text-align:left">列出当前启用的服务</td>
+</tr>
+<tr>
+<td style="text-align:left">--list-ports</td>
+<td style="text-align:left">列出当前启用的端口</td>
+</tr>
+<tr>
+<td style="text-align:left">--add-service=</td>
+<td style="text-align:left">启用服务</td>
+</tr>
+<tr>
+<td style="text-align:left">--add-port=[12345/tcp]</td>
+<td style="text-align:left">启用端口</td>
+</tr>
+</tbody>
+</table>
+<p>添加富规则：<code>--add-rich-rule=&quot;rule family='ipv4' source address='192.168.0.4/24' service name='http' accept</code></p>
+<p>允许ip192.168.0.4/24访问http</p>
+<p>移除富规则：<code>--remove-rich-rule=&quot;&lt;above&gt;&quot;</code></p>
+<h3 id="禁止普通用户su">禁止普通用户su</h3>
+<pre><code class="language-sh">cat &quot;auth    required   pam_wheel.so  use_uid&quot; &gt;&gt; /etc/pam.d/su
+cat &quot;SU_WHEEL_ONLY yes&quot; &gt;&gt; /etc/login.defs
+</code></pre>
+<p>允许指定用户su</p>
+<pre><code class="language-sh">usermod -G wheel &lt;username&gt;
+</code></pre>
+<h3 id="ssh">SSH</h3>
+<p>配置文件 <em>/etc/ssh/sshd.config</em>，<a href="http://www.04007.cn/article/538.html">参数表</a></p>
+<pre><code class="language-bash">rpm -qa | grep ssh  # 检查是否安装
+yum install openssh-server  # yum安装
+</code></pre>
+<p>服务，<code>sshd</code></p>
+<h2 id="chrony-同步时间">chrony 同步时间</h2>
+<pre><code class="language-bash">rpm -qa | grep chrony
+yum install chrony
+</code></pre>
+<p>服务，<code>chrony</code>，<code>start</code> -&gt; <code>enable</code></p>
+<p>若开启防火墙，允许NTP服务</p>
+<pre><code class="language-bash">firewall-cmd --add-service=ntp --permanent
+firewall-cmd --reload
+</code></pre>
+<h2 id="软件安装">软件安装</h2>
+<h3 id="bash-completion">bash-completion</h3>
+<p>命令自动补全增强</p>
+<pre><code class="language-bash">yum install bash-completion -y
+</code></pre>
+<h3 id="git">Git</h3>
+<p><code>yum install git -y</code></p>
+<h3 id="commitizen">Commitizen</h3>
+<p>Commitizen用于规范git提交信息。测试通过 <code>node=10/12</code>，需要 <code>npm&gt;=6</code></p>
+<p>yum默认nodejs版本过低，建议手动安装</p>
+<pre><code class="language-bash">wget https://nodejs.org/dist/v14.15.0/node-v14.15.0-linux-x64.tar.xz
+xz node-***.tar.xz
+tar -xvf node-***.tar
+mv node-*** /usr/local/node
+
+cat &gt;&gt; /etc/profile.d/custom.sh &lt;&lt; EOF
+# set for nodejs
+export NODE_HOME=/usr/local/node
+export PATH=$NODE_HOME/bin:$PATH
+EOF
+
+source /etc/profile.d/custom.sh
+node -v
+npm -v
+</code></pre>
+<p><strong>本说明针对非node项目</strong></p>
+<pre><code># 换淘宝源  --registry=https://registry.npm.taobao.org
+npm install -g commitizen git-cz  # 全局安装
+npm ls -g -depth=0  # 检查是否安装成功
+</code></pre>
+<ul>
+<li>Angular格式
+<ul>
+<li><code>npm install -g cz-conventional-changelog</code></li>
+<li><code>echo '{ &quot;path&quot;: &quot;cz-conventional-changelog&quot; }' &gt; ~/.czrc</code></li>
+</ul>
+</li>
+<li>自定义格式
+<ul>
+<li><code>npm install -g cz-customizable</code></li>
+<li><code>echo '{ &quot;path&quot;: &quot;cz-customization&quot; }' &gt; ~/.czrc</code></li>
+<li><code>cp /usr/local/node/lib/node_modules/cz-customizable/cz-config-EXAMPLE.js /home/&lt;user&gt;/.cz-config.js ; chown ***</code></li>
+<li>可根据模板文件修改提交提示</li>
+</ul>
+</li>
+</ul>
+<p><strong>使用<code>git cz -s</code>进行提交</strong></p>
+<h3 id="docker">Docker</h3>
+<p><code>uname -a</code> 检查linux内核至少3.8，建议3.10以上</p>
+<pre><code class="language-bash">yum update [-y]
+yum install yum-utils device-mapper-persistent-data lvm2 [-y]
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum list docker-ce --showduplicates | sort -r  # 查看所有版本
+yum install [docker-ce-18.03.1.ce-1.el7.centos] [-y]
+systemctl start docker ; systemctl enable docker
+docker version  # 检查是否安装成功
+</code></pre>
+<pre><code class="language-bash">docker pull &lt;image&gt;  # 抓取镜像
+docker image ls  # 列出所有镜像
+docker container ls
+docker ps -a  # 列出所有容器
+
+docker run &lt;image&gt; [--name &lt;container&gt;]  # 在容器中运行镜像
+docker start|stop|restart|kill &lt;container&gt;  # 容器控制
+docker logs &lt;container&gt;  # 容器日志
+</code></pre>
+<h3 id="mysql">MySQL</h3>
+<pre><code class="language-sh">yum install mysql mysql-devel
+</code></pre>
+<p>服务端，<code>mariadb</code>或<code>mysql-server</code></p>
+<pre><code class="language-sh">--------
+yum install mariadb*  # to replace mysql-server
+--------
+weget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+rpm -ivh mysql-community-release-el7-5.noarch.rpm
+yum install mysql-community-server
+
+vi /etc/systemd/system/mysql.service -&gt; [service] Type=simple, root:root
+注释/etc/my.cnf  pid-file
+--------
+</code></pre>
+<p>编码配置</p>
+<pre><code class="language-sh">cat &gt;&gt; /etc/my.cnf &lt;&lt; EOF
+[mysql]
+  default-character-set=utf8
+EOF
+</code></pre>
+<pre><code>semanage permissive -a mysqld_t
+firewall-cmd --zone=public --permanent --add-port=3306/tcp
+firewall-cmd --reload
+</code></pre>
+<p>启动服务</p>
+<pre><code class="language-sh">systemctl start mariadb/mysql
+systemctl enable ...
+mysql -u root
+</code></pre>
+<p>设置密码</p>
+<pre><code class="language-sh">&gt; set password for 'root'@'localhost' =password('&lt;password&gt;') ;
+&gt; create DATABASE gogs ;
+&gt; insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;gogs&quot;,password(&quot;gogsmysql&quot;)) ;
+</code></pre>
+]]></content>
+    </entry>
+</feed>

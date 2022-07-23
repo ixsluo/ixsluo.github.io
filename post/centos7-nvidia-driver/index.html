@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Centos7 Nvidia Driver | ixsluo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ixsluo.github.io/favicon.ico?v=1658566555053">
+<link rel="stylesheet" href="https://ixsluo.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Centos7离线安装Nvidia显卡驱动
+
+
+环境需求
+Nvidia驱动(450)
+CUDA(11.0)
+cuDNN
+
+环境需求
+
+依赖包
+
+yum install gcc kernel-devel kernel-headers
+
+
+检查..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ixsluo.github.io">
+        <img src="https://ixsluo.github.io/images/avatar.png?v=1658566555053" class="site-logo">
+        <h1 class="site-title">ixsluo</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://ixsluo.github.io/post/hello-gridea" class="site-nav">
+            Gridea
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ixsluo" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ixsluo.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Centos7 Nvidia Driver</h2>
+            <div class="post-date">2020-11-19</div>
+            
+            <div class="post-content" v-pre>
+              <p>Centos7离线安装Nvidia显卡驱动</p>
+<!-- more -->
+<ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E9%9C%80%E6%B1%82">环境需求</a></li>
+<li><a href="#nvidia%E9%A9%B1%E5%8A%A8450">Nvidia驱动(450)</a></li>
+<li><a href="#cuda110">CUDA(11.0)</a></li>
+<li><a href="#cudnn">cuDNN</a></li>
+</ul>
+<h2 id="环境需求">环境需求</h2>
+<ol>
+<li>依赖包</li>
+</ol>
+<pre><code class="language-bash">yum install gcc kernel-devel kernel-headers
+</code></pre>
+<ol start="2">
+<li>检查内核版本以及/boot目录大于300M</li>
+</ol>
+<pre><code class="language-bash">uname -r  # 3.10.*
+df -h
+</code></pre>
+<ol start="3">
+<li>查看显卡(Tesla K80)</li>
+</ol>
+<pre><code class="language-bash">lspci | grep NVIDIA
+</code></pre>
+<ol start="4">
+<li>禁用nouveau</li>
+</ol>
+<ul>
+<li>查看nouveau是否启用</li>
+</ul>
+<pre><code class="language-bash">lsmod | grep nouveau
+# 无输出说明已禁用
+</code></pre>
+<ul>
+<li>禁用nouveau</li>
+</ul>
+<pre><code class="language-bash">echo blacklist nouveau &gt;&gt; /etc/modprobe.d/blacklist-nouveau.conf
+echo option nouveau modeset=0 &gt;&gt; /etc/modprobe.d/blacklist-nouveau.conf
+dracut --force  # 重新生成kernel initramfs
+reboot
+</code></pre>
+<h2 id="nvidia驱动450">Nvidia驱动(450)</h2>
+<ul>
+<li><a href="https://www.nvidia.cn/Download/index.aspx?lang=cn">Nvidia驱动下载</a></li>
+</ul>
+<ol>
+<li>驱动安装</li>
+</ol>
+<pre><code class="language-bash">chmod +x ~/apps/NVIDIA-Linux-*.run
+./apps/NVIDIA-Linux-*.run --kernel-source-path=/usr/src/kernels/3.10.*** -k $(uname -r) --no-drm
+nvidia-smi  # 查看是否安装成功
+</code></pre>
+<ol start="2">
+<li><a href="https://www.cnblogs.com/2012blog/p/9431432.html">部分错误及解决方法参考</a></li>
+</ol>
+<ul>
+<li>X library字符模式警告可忽略</li>
+</ul>
+<h2 id="cuda110">CUDA(11.0)</h2>
+<ul>
+<li><a href="https://developer.nvidia.com/cuda-downloads">Nvidia下载地址</a></li>
+<li><a href="https://docs.nvidia.com/cuda/">官方文档</a></li>
+</ul>
+<ol>
+<li>安装</li>
+</ol>
+<pre><code class="language-bash">chmod +x ~/apps/cuda_11.*.run
+./apps/cuda_11.*.run --kernel-source-path=/usr/src/kernels/3.10.*** --no-drm
+</code></pre>
+<p>不必再次安装Driver，Sample、Demo、Doc可选则安装</p>
+<p>选择完毕后<code>install</code></p>
+<ol start="2">
+<li>PATH及链接</li>
+</ol>
+<pre><code class="language-bash">echo export PATH=/usr/local/cuda-11.0/bin:$PATH &gt;&gt; /etc/profile
+source /etc/profile
+echo /usr/local/cuda-11.0/lib64 &gt;&gt; /etc/ld.so.conf
+ldconfig
+</code></pre>
+<ol start="3">
+<li>卸载</li>
+</ol>
+<pre><code class="language-bash">./usr/local/cuda-11.0/bin/cuda-uninstaller
+</code></pre>
+<h2 id="cudnn">cuDNN</h2>
+<ul>
+<li><a href="https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html">官方文档</a></li>
+</ul>
+<pre><code class="language-bash">tar -xzvf cudnn-x.x-linux-x64-v8.x.x.x.tgz
+cp cuda/include/cudnn*.h /usr/local/cuda/include
+cp cuda/lib64/libcudnn* /usr/local/cuda/lib64
+chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ixsluo.github.io/post/cluster-network/">
+                  <h3 class="post-title">
+                    PBS集群安装
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

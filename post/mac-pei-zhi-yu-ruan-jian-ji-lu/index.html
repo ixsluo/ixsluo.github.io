@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Mac配置与软件记录 | ixsluo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ixsluo.github.io/favicon.ico?v=1658566555053">
+<link rel="stylesheet" href="https://ixsluo.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+iTerm2
+zsh &amp; oh-my-zsh
+delta
+dotfiles
+X11
+Fonts
+Alfred
+Github Page
+Proxy
+
+iTerm2
+
+shell integration
+ssh with tmux
+
+..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ixsluo.github.io">
+        <img src="https://ixsluo.github.io/images/avatar.png?v=1658566555053" class="site-logo">
+        <h1 class="site-title">ixsluo</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://ixsluo.github.io/post/hello-gridea" class="site-nav">
+            Gridea
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ixsluo" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ixsluo.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Mac配置与软件记录</h2>
+            <div class="post-date">2021-07-14</div>
+            
+            <div class="post-content" v-pre>
+              <ol>
+<li><a href="#iterm2">iTerm2</a></li>
+<li><a href="#zsh--oh-my-zsh">zsh &amp; oh-my-zsh</a></li>
+<li><a href="#delta">delta</a></li>
+<li><a href="#dotfiles">dotfiles</a></li>
+<li><a href="#x11">X11</a></li>
+<li><a href="#fonts">Fonts</a></li>
+<li><a href="#alfred">Alfred</a></li>
+<li><a href="#github-page">Github Page</a></li>
+<li><a href="#proxy">Proxy</a></li>
+</ol>
+<h2 id="iterm2">iTerm2</h2>
+<ul>
+<li>shell integration</li>
+<li>ssh with tmux
+<ul>
+<li><code>ssh -Yt [target] tmux -2u -CC new -A -s [session]</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="zsh-oh-my-zsh">zsh &amp; oh-my-zsh</h2>
+<p>zsh is instlled by default in mac</p>
+<pre><code>chsh -s /bin/zsh
+sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+</code></pre>
+<h2 id="delta">delta</h2>
+<p><a href="https://github.com/dandavison/delta">A viewer for git and diff output</a></p>
+<p><code>brew install git-delta</code></p>
+<details>
+  <summary>.gitconfig</summary>
+  <pre><code>[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+<p>[interactive]<br>
+diffFilter = delta --color-only</p>
+<p>[delta]<br>
+features = side-by-side line-numbers decorations<br>
+whitespace-error-style = 22 reverse</p>
+<p>[delta &quot;decorations&quot;]<br>
+commit-decoration-style = bold yellow box ul<br>
+file-style = bold yellow ul<br>
+file-decoration-style = none<br>
+</code></pre></p>
+</details>
+<h2 id="dotfiles">dotfiles</h2>
+<p><a href="https://github.com/ixsluo/.dotfiles/blob/main/.README.md">My dotfiles</a></p>
+<h2 id="x11">X11</h2>
+<pre><code>brew install xquartz
+open /Applications/Utilities/XQuartz.app
+ssh -Y [target]
+</code></pre>
+<h2 id="fonts">Fonts</h2>
+<ul>
+<li><a href="https://github.com/tonsky/FiraCode">Fira Code</a>
+<ul>
+<li><code>brew install font-fira-code</code></li>
+</ul>
+</li>
+<li>Hack Nerd ------ Non-ASCII Font
+<ul>
+<li><code>brew install font-hack-nerd-font</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="alfred">Alfred</h2>
+<p><code>Preferences</code> -&gt; <code>Features</code> -&gt; <code>Terminal</code> -&gt; <code>Application</code> -&gt; <code>Custom</code></p>
+<details>
+  <summary>change default terminal to iTerm2</summary>
+  <pre><code>on alfred_script(q)
+	if application "iTerm2" is running or application "iTerm" is running then
+		run script "
+			on run {q}
+				tell application \":Applications:iTerm.app\"
+					activate
+					try
+						select first window
+						set onlywindow to false
+					on error
+						create window with default profile
+						select first window
+						set onlywindow to true
+					end try
+					tell current session of the first window
+						if onlywindow is false then
+							tell split vertically with default profile
+								write text q
+							end tell
+						end if
+					end tell
+				end tell
+			end run
+		" with parameters {q}
+	else
+		run script "
+			on run {q}
+				tell application \":Applications:iTerm.app\"
+					activate
+					try
+						select first window
+					on error
+						create window with default profile
+						select first window
+					end try
+					tell the first window
+						tell current session to write text q
+					end tell
+				end tell
+			end run
+		" with parameters {q}
+	end if
+end alfred_script
+  </code></pre>
+</details>
+<h2 id="github-page">Github Page</h2>
+<p><code>Ruby</code>(default) <code>RubyGems</code>(default) <code>nvm</code> <code>node</code></p>
+<ul>
+<li><a href="https://github.com/nvm-sh/nvm#installing-and-updating">nvm</a>
+<ul>
+<li><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash</code></li>
+</ul>
+</li>
+<li>node
+<ul>
+<li><code>nvm install --lts</code> long-term-support verson</li>
+</ul>
+</li>
+</ul>
+<pre><code>[sudo] gem install jekyll
+git clone [github page url]
+cd [github page dir]
+bundle init  # create Gemfile if there's no one
+echo 'gem &quot;minima&quot;' &gt;&gt; Gemfile  # load theme
+bundle install
+bundle exec jekyll serve --trace  # running jekyll on a local port
+rake new  # create a new post from a template
+</code></pre>
+<h2 id="proxy">Proxy</h2>
+<p>assume system proxy has been set</p>
+<pre><code>#proxy_addr=&quot;http://127.0.0.1:8118&quot;
+proxy_addr=&quot;socks5://127.0.0.1:1080&quot;
+alias proxy=&quot;export all_proxy=$proxy_addr&quot;
+alias unproxy=&quot;unset all_proxy&quot;
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ixsluo.github.io/post/pytorch-bi-ji/">
+                  <h3 class="post-title">
+                    Pytorch 笔记
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

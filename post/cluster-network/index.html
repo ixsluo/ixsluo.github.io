@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>PBS集群安装 | ixsluo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ixsluo.github.io/favicon.ico?v=1658566555053">
+<link rel="stylesheet" href="https://ixsluo.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="记录处理集群网络连接
+
+
+1. 主机客户机网段设置
+
+查看网卡
+登录节点设置
+
+主机名修改
+外部网络
+内部网络
+ip映射
+
+
+计算节点设置
+
+主机名修改
+内部网络
+ip映射
+
+
+
+
+2. 程序包安装
+3. NIS及NFS服务
+
+主节点
+计算..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ixsluo.github.io">
+        <img src="https://ixsluo.github.io/images/avatar.png?v=1658566555053" class="site-logo">
+        <h1 class="site-title">ixsluo</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://ixsluo.github.io/post/hello-gridea" class="site-nav">
+            Gridea
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ixsluo" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ixsluo.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">PBS集群安装</h2>
+            <div class="post-date">2020-11-16</div>
+            
+            <div class="post-content" v-pre>
+              <p>记录处理集群网络连接</p>
+<!-- more -->
+<ul>
+<li><a href="#1-%E4%B8%BB%E6%9C%BA%E5%AE%A2%E6%88%B7%E6%9C%BA%E7%BD%91%E6%AE%B5%E8%AE%BE%E7%BD%AE">1. 主机客户机网段设置</a>
+<ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%8D%A1">查看网卡</a></li>
+<li><a href="#%E7%99%BB%E5%BD%95%E8%8A%82%E7%82%B9%E8%AE%BE%E7%BD%AE">登录节点设置</a>
+<ul>
+<li><a href="#%E4%B8%BB%E6%9C%BA%E5%90%8D%E4%BF%AE%E6%94%B9"><strong>主机名修改</strong></a></li>
+<li><a href="#%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C">外部网络</a></li>
+<li><a href="#%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C">内部网络</a></li>
+<li><a href="#ip%E6%98%A0%E5%B0%84">ip映射</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E8%AE%BE%E7%BD%AE">计算节点设置</a>
+<ul>
+<li><a href="#%E4%B8%BB%E6%9C%BA%E5%90%8D%E4%BF%AE%E6%94%B9-1"><strong>主机名修改</strong></a></li>
+<li><a href="#%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C-1">内部网络</a></li>
+<li><a href="#ip%E6%98%A0%E5%B0%84-1">ip映射</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-%E7%A8%8B%E5%BA%8F%E5%8C%85%E5%AE%89%E8%A3%85">2. 程序包安装</a></li>
+<li><a href="#3-nis%E5%8F%8Anfs%E6%9C%8D%E5%8A%A1">3. NIS及NFS服务</a>
+<ul>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9">计算节点</a></li>
+<li><a href="#nfs%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD">NFS目录挂载</a></li>
+</ul>
+</li>
+<li><a href="#4-pbs%E5%AE%89%E8%A3%85">4. PBS安装</a>
+<ul>
+<li><a href="#torque6111">Torque(6.1.1.1)</a>
+<ul>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85">主节点安装</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85">计算节点安装</a></li>
+<li><a href="#torque%E5%8D%B8%E8%BD%BD">Torque卸载</a></li>
+</ul>
+</li>
+<li><a href="#maui33">MAUI(3.3)</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-主机客户机网段设置">1. 主机客户机网段设置</h2>
+<ul>
+<li>服务<code>network</code></li>
+</ul>
+<h3 id="查看网卡">查看网卡</h3>
+<pre><code class="language-bash">ip addr
+</code></pre>
+<p>假设内部网卡为<code>eno1</code>，外部网卡为<code>eno2</code></p>
+<h3 id="登录节点设置">登录节点设置</h3>
+<h4 id="主机名修改"><strong>主机名修改</strong></h4>
+<p>修改登录节点计算机名为<em>main</em></p>
+<pre><code class="language-bash">hostnamectl set-hostname main
+</code></pre>
+<h4 id="外部网络">外部网络</h4>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno2
+</code></pre>
+<p>修改以下配置</p>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.8.14  # 外部网络的路由地址
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.8.254  # 网关
+</code></pre>
+<h4 id="内部网络">内部网络</h4>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno1
+</code></pre>
+<p>修改以下配置</p>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.2.1  # 内部地址，2网段
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.2.254  # 网关
+</code></pre>
+<h4 id="ip映射">ip映射</h4>
+<pre><code class="language-bash">cat &gt;&gt; /etc/hosts &lt;&lt; EOF
+# 内网ip  |  主机名
+192.168.2.1   main
+192.168.2.101 node01
+192.168.2.102 node02
+EOF
+</code></pre>
+<h3 id="计算节点设置">计算节点设置</h3>
+<h4 id="主机名修改-2"><strong>主机名修改</strong></h4>
+<p>修改计算节点计算机名为<em>node**</em>，以node01为例</p>
+<pre><code class="language-bash">hostnamectl set-hostname node01
+</code></pre>
+<h4 id="内部网络-2">内部网络</h4>
+<p>计算节点无外部网络，故只需修改内网网卡配置</p>
+<pre><code class="language-bash">vi /etc/sysconfig/network-scripts/ifcfg-eno1
+</code></pre>
+<pre><code class="language-txt">BOOTPROTO=static  # 静态获取地址
+ONBOOT=yes  # 系统启动时自动加载此配置
+IPADDR=192.168.2.101  # 内部地址，2网段，101号
+NETMASK=255.255.255.0  # 子网掩码
+GATEWAY=192.168.2.1  # 登录节点作为网关
+</code></pre>
+<h4 id="ip映射-2">ip映射</h4>
+<p><strong>至少</strong>要添加主节点ip</p>
+<pre><code class="language-bash">cat &gt;&gt; /etc/hosts &lt;&lt; EOF
+# 内网ip  |  主机名
+192.168.2.1   main
+EOF
+</code></pre>
+<h2 id="2-程序包安装">2. 程序包安装</h2>
+<p>集群无外网，且计算节点为最小化安装</p>
+<p>从另一台最小化安装的机器上下载安装包以及依赖包，如</p>
+<pre><code class="language-bash">yum -y install ypserv ypbind yp-tool --downloadonly --downloaddir=./NIS
+# 下载NIS服务及当前缺少的依赖包到NIS文件夹
+scp -rP &lt;port&gt; NIS &lt;remote&gt;:&lt;dir&gt;
+# 传输到集群机器
+</code></pre>
+<p>从本地安装rpm包</p>
+<pre><code class="language-bash">yum localinstall ***.rpm
+</code></pre>
+<h2 id="3-nis及nfs服务">3. NIS及NFS服务</h2>
+<h3 id="主节点">主节点</h3>
+<pre><code>软件包(yum install)：
+ypserv ypbind yp-tool  # NIS
+nfs-utils rpcbind  # NFS
+</code></pre>
+<ol>
+<li>设置NIS域名</li>
+</ol>
+<pre><code class="language-bash">nisdomainname JohnGPU
+</code></pre>
+<ol start="2">
+<li>设置NIS网域名称，开机自动设置NIS域名</li>
+</ol>
+<pre><code class="language-bash">echo &quot;NISDOMAIN=JohnGPU&quot; &gt;&gt; /etc/sysconfig/network
+echo &quot;/bin/nisdomainname JohnGPU&quot; &gt;&gt; /etc/rc.d/rc.local
+</code></pre>
+<ol start="3">
+<li>启动服务</li>
+</ol>
+<pre><code class="language-bash">systemctl restart rpcbind
+systemctl restart ypserv
+</code></pre>
+<ol start="4">
+<li>建立数据库，并再次重启</li>
+</ol>
+<pre><code class="language-bash">/usr/lib64/yp/ypinit -m
+&gt; Ctrl + D
+&gt; y
+systemctl restart ypserv
+</code></pre>
+<ol start="5">
+<li><strong>更新数据库</strong></li>
+</ol>
+<pre><code class="language-bash"># 当用户信息更新后(新建、修改等)
+make -C /var/yp
+</code></pre>
+<h3 id="计算节点">计算节点</h3>
+<pre><code class="language-bash"># 软件包
+yum install ypbind yp-tool
+</code></pre>
+<ol>
+<li>加入同一NIS域，以及开机自动加入</li>
+</ol>
+<pre><code class="language-bash">echo &quot;NISDOMAIN=JohnGPU&quot; &gt;&gt; /etc/sysconfig/network
+echo &quot;/bin/nisdomainname JohnGPU&quot; &gt;&gt; /etc/rc.d/rc.local
+</code></pre>
+<ol start="2">
+<li>修改用户密码验证顺序，由<code>/etc/nsswitch.conf</code>控制，搜索顺序由左至右</li>
+</ol>
+<pre><code class="language-bash">sed -i 's/^passwd:.*/passwd: files nis/g' /etc/nsswitch.conf
+sed -i 's/^shadow:.*/shadow: files nis/g' /etc/nsswitch.conf
+sed -i 's/^group:.*/group: files nis/g' /etc/nsswitch.conf
+sed -i 's/^hosts:.*/hosts: files dns nis/g' /etc/nsswitch.conf
+</code></pre>
+<ol start="3">
+<li>修改计算节点配置，增加主节点地址</li>
+</ol>
+<pre><code class="language-bash">echo &quot;domain JohnGPU server &lt;服务端内部地址&gt;&quot; &gt;&gt; /etc/yp.conf
+</code></pre>
+<ol start="4">
+<li>修改系统认证文件</li>
+</ol>
+<pre><code class="language-bash">sed -i 's/USENIS=no/USENIS=yes/g' /etc/sysconfig/autoconfig
+
+sed -i 's/^password[[:space:]]*sufficient.*/\
+password    sufficient    pam_unix.so sha512 shadow nis nullok try_first_pass use_authtok/g' \
+/etc/pam.d/system-auth
+</code></pre>
+<ol start="5">
+<li>重启服务，若配置正确仍启动失败，则可能为防火墙与selinux权限问题</li>
+</ol>
+<pre><code class="language-bash">systemctl restart rpcbind
+systemctl restart ypbind
+</code></pre>
+<ol start="6">
+<li>计算节点执行<code>yptest</code>命令检查是否存在用户资料信息</li>
+</ol>
+<h3 id="nfs目录挂载">NFS目录挂载</h3>
+<ol>
+<li>主节点</li>
+</ol>
+<ul>
+<li>编辑nfs挂载配置</li>
+</ul>
+<pre><code class="language-bash">cat &gt;&gt; /etc/exports &lt;&lt; EOF
+/home 192.168.2.0/255.255.255.0(insecure,rw,sync,no_root_squash)
+/opt  192.168.2.0/255.255.255.0(insecure,rw,sync,no_root_squash)
+EOF
+# 共享家目录及共享软件目录，共享网段为192.168.2.0，权限为rw(ro仅读)
+# sync开启同步
+</code></pre>
+<ul>
+<li>启动服务</li>
+</ul>
+<pre><code class="language-bash">systemctl enable rpcbind.service
+systemctl enable nfs-server.service
+systemctl start rpcbind.service
+systemctl start nfs-server.service
+</code></pre>
+<pre><code class="language-bash">exportfs -r  # 使配置生效
+exportfs  # 查看共享目录
+</code></pre>
+<ul>
+<li><code>showmount -e</code>检查nfs服务，若出现’clnt_create: RPC: Program not registered‘错误，依次关闭nfs和rpcbind，再依次启动rpcbind和nfs</li>
+</ul>
+<pre><code class="language-bash">systemctl stop nfs
+systemctl stop rpcbind
+systemctl start rpcbind
+systemctl start nfs
+</code></pre>
+<ol start="2">
+<li>计算节点</li>
+</ol>
+<ul>
+<li><code>rpcbind</code>服务确认启动</li>
+<li><code>nfs</code>服务确认安装，但不需启动</li>
+</ul>
+<pre><code class="language-bash">showmount -e main  # 查看可挂载的主机共享目录
+mount -t nfs main:/home /home  # 挂载家目录
+mount -t nfs main:/opt  /opt  # 挂载家目录
+</code></pre>
+<ul>
+<li>若出现<code>Stale File Handle</code>错误，先取消挂载，再挂载</li>
+</ul>
+<pre><code class="language-bash">umount -f /home
+</code></pre>
+<ul>
+<li>
+<p>自动挂载-autofs</p>
+<p>未实现，转而使用挂载脚本</p>
+</li>
+</ul>
+<pre><code class="language-bash">for node in 01 02 ; do
+    ssh node$node &gt; /dev/null 2&gt;&amp;1 &lt;&lt; EOF
+    mount -t nfs main:/home /home
+    mount -t nfs main:/opt /opt
+    exit
+EOF
+done
+</code></pre>
+<pre><code class="language-bash"># 软件包
+yum install autofs hesiod
+# 修改配置
+sed -i &quot;s/^timeout = .*$/timeout = 0/g&quot; /etc/autofs.conf
+echo /home  /etc/auto.nfs &gt;&gt; /etc/auto.master
+echo /opt  /etc/auto.nfs &gt;&gt; /etc/auto.master
+echo /home -rw -insecure -sync -no_root_squash main:/home &gt;&gt; /etc/auto.nfs
+echo /opt -rw -insecure -sync -no_root_squash main:/opt &gt;&gt; /etc/auto.nfs
+</code></pre>
+<pre><code class="language-bash">echo &quot;main:/home /home nfs defaults 0 0&quot; &gt;&gt; /etc/fstab
+echo &quot;main:/opt  /opt  nfs defaults 0 0&quot; &gt;&gt; /etc/fstab
+mount -a
+</code></pre>
+<h2 id="4-pbs安装">4. PBS安装</h2>
+<pre><code class="language-bash"># 软件包
+yum install \
+libxml2-devel openssl-devel \
+gcc gcc-c++ \
+boost-devel libtool
+</code></pre>
+<h3 id="torque6111">Torque(6.1.1.1)</h3>
+<pre><code class="language-bash"># 下载
+wget http://wpfilebase.s3.amazonaws.com/torque/torque-6.1.0.tar.gz
+tar -zxvf torque-*
+cd torque-*
+</code></pre>
+<h4 id="主节点安装">主节点安装</h4>
+<ol>
+<li>编译安装</li>
+</ol>
+<pre><code class="language-bash">./configure
+# --prefix=[/usr/local]  安装目录
+# --with-server-home=[/var/spool/torque]  默认配置文件目录
+make
+make packages
+make install
+echo main &gt; /var/spool/torque/server_name  # 写入主节点主机名
+</code></pre>
+<ol start="2">
+<li>建立库文件</li>
+</ol>
+<pre><code class="language-bash">echo &quot;/usr/local/lib&quot; &gt; /etc/ld.so.conf.d/torque.conf  # 安装库路径
+ldconfig
+# libtool --finish /usr/local/torque/lib
+</code></pre>
+<ol start="3">
+<li>启动服务<code>trqauthd</code></li>
+</ol>
+<pre><code class="language-bash">cp contrib/init.d/trqauthd.service /usr/lib/systemd/system/
+systemctl enable trqauthd.service
+systemctl start trqauthd.service
+</code></pre>
+<ol start="4">
+<li>初始化设置</li>
+</ol>
+<pre><code class="language-bash">./torque.setup root
+qterm -tquick
+</code></pre>
+<ol start="5">
+<li>设置计算节点属性</li>
+</ol>
+<pre><code class="language-bash"># cp ~/nodes /var/spool/torque/server_priv/
+cat &gt; $TORQUE_HOME/server_priv/nodes &lt;&lt; EOF
+# 节点名  |  cpu核数  |  属性等
+node01 np=28
+node02 np=28
+# ...
+EOF
+</code></pre>
+<ol start="6">
+<li>安装到自定义目录时，检查环境变量，若PATH中缺少相应路径，则手动添加</li>
+</ol>
+<pre><code class="language-bash">cat &gt;&gt; /etc/profile &lt;&lt; EOF
+TORQUE=/usr/local/torque  # 安装目录
+TORQUE_HOME=/var/spool/torque  # 配置文件目录
+export PATH=$TORQUE/bin:$TORQUE/sbin:$PATH
+EOF
+source /etc/profile
+</code></pre>
+<ol start="7">
+<li>启动服务<code>pbs_server</code>、<code>pbs_sched</code></li>
+</ol>
+<pre><code class="language-bash">cp contrib/systemd/pbs_server.service /usr/lib/systemd/system/
+systemctl enable pbs_server.service
+systemctl start pbs_server.service
+
+cp contrib/systemd/ pbs_sched.service /usr/lib/systemd/system/
+systemctl enable pbs_sched.service
+systemctl start pbs_sched.service
+</code></pre>
+<ol start="8">
+<li>复制计算节点安装包至各计算节点</li>
+</ol>
+<pre><code class="language-bash">for node in 01 02 ; do
+  scp contrib/init.d/{pbs_mom,trqauthd} node$node:/etc/init.d/
+  scp torque-package-{mom,clients}-linux-x86_64.sh node$node:/root/
+  scp /etc/ld.so.conf.d/torque/conf node$node:/etc/ld.so.conf.d/
+done
+</code></pre>
+<h4 id="计算节点安装">计算节点安装</h4>
+<ol>
+<li>安装由主节点复制过来的安装包</li>
+</ol>
+<pre><code class="language-bash">./torque-package-clients-linux-x86_64.sh --install
+./torque-package-mom-linux-x86_64.sh --install
+</code></pre>
+<ol start="2">
+<li>链接库</li>
+</ol>
+<pre><code class="language-bash">/sbin/ldconfig
+</code></pre>
+<ol start="3">
+<li>设置主节点名</li>
+</ol>
+<pre><code class="language-bash"># 配置文件目录与主节点相同
+# main为主节点主机名
+echo -e &quot;\$pbsserver main\n\$logevent 225&quot; &gt; /var/spool/torque/mom_priv/config
+echo main &gt; /var/spool/torque/server_name
+</code></pre>
+<ol start="4">
+<li>启动服务<code>pbs_mom</code></li>
+</ol>
+<pre><code class="language-bash">systemctl enable pbs_mom
+systemctl start pbs_mom
+</code></pre>
+<ol start="5">
+<li>检查是否成功</li>
+</ol>
+<pre><code class="language-bash">pbsnodes -a  # 检查节点状态是否为free
+
+# 非root用户下，运行测试
+qsub -I
+echo &quot;sleep 10&quot; | qsub
+qstat
+</code></pre>
+<h4 id="torque卸载">Torque卸载</h4>
+<ol>
+<li>停止服务</li>
+</ol>
+<pre><code class="language-bash"># 计算节点
+systemctl stop pbs_mom.service
+# 主节点
+systemctl stop pbs_sched.service
+systemctl stop pbs_server.service
+systemctl stop trqauthd.service
+# 计算节点
+systemctl disable pbs_mom.service
+# 主节点
+systemctl disable pbs_sched.service
+systemctl disable pbs_server.service
+systemctl disable trqauthd.service
+</code></pre>
+<ol start="2">
+<li>删除添加的文件</li>
+</ol>
+<pre><code class="language-bash"># 计算节点
+rm -f /usr/lib/systemd/system/pbs_mom.service
+# 主节点
+rm -f /usr/lib/systemd/system/pbs_sched.service
+rm -f /usr/lib/systemd/system/pbs_server.service
+rm -f /usr/lib/systemd/system/trqauthd.service
+# 计算节点
+rm -f /etc/ld.so.conf.d/torque.conf
+# 主节点
+rm -f /etc/ld.so.conf.d/torque.conf
+make uninstall
+</code></pre>
+<ol start="3">
+<li>计算节点卸载</li>
+</ol>
+<pre><code class="language-bash">./torque-package-mom-linux-x86_64.sh -l
+./torque-package-clients-linux-x86_64.sh -l
+</code></pre>
+<h3 id="maui33">MAUI(3.3)</h3>
+<ol>
+<li>主节点编译安装</li>
+</ol>
+<pre><code class="language-bash">tar -zxvf maui-*.tar.gz
+cd maui-*
+./configure
+# --with-pbs=[/usr/local]  查找pbs-config或libpbs.a的路径
+# --prefix=[/usr/local/maui]
+# --with-spooldir=[/usr/local/maui]
+make
+make install
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ixsluo.github.io/post/mongodb-managing/">
+                  <h3 class="post-title">
+                    MongoDB使用Docker安装与备份恢复
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

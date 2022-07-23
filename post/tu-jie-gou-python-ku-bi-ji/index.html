@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>图结构python库笔记 | ixsluo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ixsluo.github.io/favicon.ico?v=1658566555053">
+<link rel="stylesheet" href="https://ixsluo.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+
+NetworkX
+
+numpy数组邻接矩阵创建图
+
+
+pyg
+
+torch_geometric.utils
+
+
+
+
+NetworkX
+numpy数组邻接矩阵创建图
+
+nx.from_numpy_array(A, parallel_edg..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://ixsluo.github.io">
+        <img src="https://ixsluo.github.io/images/avatar.png?v=1658566555053" class="site-logo">
+        <h1 class="site-title">ixsluo</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://ixsluo.github.io/post/hello-gridea" class="site-nav">
+            Gridea
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/ixsluo" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ixsluo.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">图结构python库笔记</h2>
+            <div class="post-date">2022-07-22</div>
+            
+            <div class="post-content" v-pre>
+              <!--more-->
+<p><ul class="markdownIt-TOC">
+<li><a href="#networkx">NetworkX</a>
+<ul>
+<li><a href="#numpy%E6%95%B0%E7%BB%84%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E5%88%9B%E5%BB%BA%E5%9B%BE">numpy数组邻接矩阵创建图</a></li>
+</ul>
+</li>
+<li><a href="#pyg">pyg</a>
+<ul>
+<li><a href="#torch_geometricutils"><code>torch_geometric.utils</code></a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="networkx"><a href="https://www.osgeo.cn/networkx/index.html">NetworkX</a></h1>
+<h2 id="numpy数组邻接矩阵创建图">numpy数组邻接矩阵创建图</h2>
+<ul>
+<li><code>nx.from_numpy_array(A, parallel_edges=False, create_using=None)</code><a href="https://www.osgeo.cn/networkx/reference/generated/networkx.convert_matrix.from_numpy_array.html#">ref</a>
+<ul>
+<li>默认创建<code>nx.Graph</code>，A中非对称部分只要存在一个则认为存在边，构成无向图</li>
+</ul>
+</li>
+</ul>
+<h1 id="pyg"><a href="https://pytorch-geometric.readthedocs.io/en/latest/notes/introduction.html">pyg</a></h1>
+<h2 id="torch_geometricutils"><code>torch_geometric.utils</code></h2>
+<ul>
+<li><code>dense_to_sparse(adj)</code> -&gt; <code>(edge_index, edge_attr)</code> ，转换邻接矩阵为COO格式edge_index</li>
+<li><code>to_dense_adj(edge_index, *)</code> -&gt; <code>adj</code>，形状(B, max_num_nodes, max_num_nodes)</li>
+<li><code>to_undirected(edge_index, *)</code> -&gt; <code>edge_index, [edge_attr]</code>，增加边以构成无向图，返回新的边，如果提供边属性则还会合并(add, mean, min, max, mul)重复的边属性，并返回。(i, j)与(j, i)被认为是重复的边</li>
+<li><code>remove_isolated_nodes(edge_index, edge_attr=None, num_nodes=None)</code>，移除孤立节点，<strong>重新对边编号</strong>，返回(edge_index, edge_attr, node_mask)，其中node_mask是节点的布尔掩码</li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://ixsluo.github.io/post/mac-pei-zhi-yu-ruan-jian-ji-lu/">
+                  <h3 class="post-title">
+                    Mac配置与软件记录
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
